@@ -1,0 +1,113 @@
+---
+import { SEO } from 'astro-seo';
+import type { MetaData } from '../../utils/types';
+import { createOgImageUrl } from '../../utils/helpers';
+
+interface Props extends MetaData {
+  noindex?: boolean;
+  nofollow?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl = new URL(Astro.url.pathname, import.meta.env.PUBLIC_SITE_URL).toString(),
+  image,
+  imageAlt,
+  author,
+  publishedDate,
+  updatedDate,
+  type = 'website',
+  noindex = false,
+  nofollow = false,
+} = Astro.props;
+
+const ogImage = createOgImageUrl(title, image);
+const siteName = 'Hilfsmittel-Berater.at';
+---
+
+<SEO
+  title={title}
+  description={description}
+  canonical={canonicalUrl}
+  openGraph={{
+    basic: {
+      title: title,
+      type: type,
+      image: ogImage,
+      url: canonicalUrl,
+    },
+    optional: {
+      siteName: siteName,
+      description: description,
+      locale: 'de_AT',
+    },
+    image: {
+      url: ogImage,
+      alt: imageAlt || title,
+    },
+    article: type === 'article' ? {
+      publishedTime: publishedDate?.toISOString(),
+      modifiedTime: updatedDate?.toISOString(),
+      authors: [author || 'Platus Team'],
+      tags: [],
+    } : undefined,
+  }}
+  twitter={{
+    card: 'summary_large_image',
+    site: '@PlatusAAC',
+    title: title,
+    description: description,
+    image: ogImage,
+    imageAlt: imageAlt || title,
+  }}
+  extend={{
+    meta: [
+      { name: 'robots', content: `${noindex ? 'noindex' : 'index'},${nofollow ? 'nofollow' : 'follow'}` },
+      { name: 'author', content: author || 'Platus Team' },
+      { name: 'theme-color', content: '#0ea5e9' },
+    ],
+    link: [
+      { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: true },
+      { 
+        rel: 'stylesheet', 
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap'
+      },
+    ],
+  }}
+/>
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': type === 'article' ? 'BlogPosting' : 'WebSite',
+  ...(type === 'article' ? {
+    headline: title,
+    image: [ogImage],
+    datePublished: publishedDate?.toISOString(),
+    dateModified: updatedDate?.toISOString() || publishedDate?.toISOString(),
+    author: {
+      '@type': 'Person',
+      name: author || 'Platus Team',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Platus',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${import.meta.env.PUBLIC_SITE_URL}/logo.png`,
+      },
+    },
+    description: description,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
+  } : {
+    name: siteName,
+    url: import.meta.env.PUBLIC_SITE_URL,
+    description: description,
+  }),
+})}></script>

@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEO from '../../components/common/SEO.astro';
+import Header from '../../components/common/Header.astro';
+import Footer from '../../components/common/Footer.astro';
+import ChatbotCTA from '../../components/common/ChatbotCTA.astro';
+import { getAllCategories } from '../../utils/content';
+import { slugify } from '../../utils/helpers';
+
+// Get all categories
+const categories = await getAllCategories();
+
+// Sort categories by post count (descending)
+const sortedCategories = [...categories].sort((a, b) => b.count - a.count);
+
+// Meta information
+const title = 'Alle Kategorien | Hilfsmittel-Berater Blog';
+const description = 'Durchsuchen Sie alle Kategorien im Hilfsmittel-Berater Blog und finden Sie Informationen zu verschiedenen Aspekten der unterstützten Kommunikation.';
+---
+
+<Layout>
+  <SEO
+    title={title}
+    description={description}
+  />
+  
+  <Header />
+  
+  <main class="pt-24 pb-16">
+    <!-- Categories Header -->
+    <section class="bg-gradient-to-r from-primary-500 to-secondary-600 text-white py-12 md:py-16">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl">
+          <div class="mb-4">
+            <a href="/blog" class="inline-flex items-center text-white/80 hover:text-white transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Zurück zum Blog
+            </a>
+          </div>
+          <h1 class="text-3xl md:text-4xl font-heading font-medium mb-4">
+            Alle Kategorien
+          </h1>
+          <p class="text-lg md:text-xl text-white/90 leading-relaxed">
+            Durchsuchen Sie unsere Kategorien und finden Sie gezielte Informationen zu verschiedenen Aspekten der unterstützten Kommunikation.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Categories Content -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedCategories.map((category) => (
+            <a 
+              href={`/blog/category/${category.slug}`}
+              class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xl font-medium">{category.name}</h2>
+                <span class="bg-primary-100 text-primary-800 px-2 py-1 text-sm rounded-full">
+                  {category.count} {category.count === 1 ? 'Artikel' : 'Artikel'}
+                </span>
+              </div>
+              <p class="text-gray-600">
+                Alle Artikel zum Thema {category.name}
+              </p>
+              <div class="mt-4 text-primary-600 flex items-center text-sm font-medium">
+                Artikel anzeigen
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+        
+        <div class="mt-12">
+          <ChatbotCTA />
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>

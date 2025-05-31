@@ -1,0 +1,47 @@
+---
+import type { TagInfo } from '../../utils/types';
+
+interface Props {
+  tags: TagInfo[];
+  currentTag?: string;
+}
+
+const { tags, currentTag } = Astro.props;
+
+// Sort tags alphabetically
+const sortedTags = [...tags].sort((a, b) => a.name.localeCompare(b.name));
+
+// Calculate tag size based on count
+function getTagSize(count: number): string {
+  const maxCount = Math.max(...tags.map(tag => tag.count));
+  const minCount = Math.min(...tags.map(tag => tag.count));
+  
+  if (maxCount === minCount) return 'text-sm';
+  
+  const ratio = (count - minCount) / (maxCount - minCount);
+  
+  if (ratio < 0.25) return 'text-xs';
+  if (ratio < 0.5) return 'text-sm';
+  if (ratio < 0.75) return 'text-base';
+  return 'text-lg';
+}
+---
+
+<div class="bg-white rounded-xl shadow-md p-6">
+  <h2 class="text-lg font-medium mb-4">Tags</h2>
+  
+  <div class="flex flex-wrap gap-2">
+    {sortedTags.map((tag) => (
+      <a 
+        href={`/blog/tag/${tag.slug}`}
+        class={`inline-block px-3 py-1 rounded-full ${getTagSize(tag.count)} ${
+          currentTag === tag.slug 
+            ? 'bg-primary-100 text-primary-800 font-medium'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        } transition-colors`}
+      >
+        {tag.name}
+      </a>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,44 @@
+---
+import type { BlogPost } from '../../utils/types';
+import { formatDate, getReadingTime } from '../../utils/helpers';
+
+interface Props {
+  posts: BlogPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <section class="mt-12 pt-8 border-t border-gray-100">
+    <h2 class="text-2xl font-heading font-medium mb-6">Verwandte Artikel</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {posts.map((post) => (
+        <article class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+          <a href={`/blog/${post.slug}`} class="block aspect-video overflow-hidden">
+            <img 
+              src={post.coverImage || 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'} 
+              alt={post.imageAlt || post.title} 
+              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            />
+          </a>
+          
+          <div class="p-4">
+            <h3 class="font-medium text-lg mb-2">
+              <a href={`/blog/${post.slug}`} class="hover:text-primary-600 transition-colors">
+                {post.title}
+              </a>
+            </h3>
+            
+            <div class="text-sm text-gray-500">
+              <time datetime={post.data.publishedDate.toISOString()}>{formatDate(post.data.publishedDate, 'PP')}</time>
+              <span class="mx-1">•</span>
+              <span>{getReadingTime(post.body)} min Lesezeit</span>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+)}

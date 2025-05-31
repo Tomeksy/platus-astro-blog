@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+import { getBlogPostBySlug, getRelatedPosts } from '../../utils/content';
+
+// Get the slug from the URL parameters
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+// Fetch the blog post data using the slug
+const post = await getBlogPostBySlug(slug);
+
+// If post doesn't exist, return 404
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Get related posts - now correctly accessing categories and tags from post.data
+const relatedPosts = await getRelatedPosts(post.id, post.data.categories, post.data.tags, 3);
+---
+
+<BlogPostLayout post={post} relatedPosts={relatedPosts} />

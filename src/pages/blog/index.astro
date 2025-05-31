@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SEO from '../../components/common/SEO.astro';
+import Header from '../../components/common/Header.astro';
+import Footer from '../../components/common/Footer.astro';
+import BlogCard from '../../components/blog/BlogCard.astro';
+import Pagination from '../../components/blog/Pagination.astro';
+import CategoryList from '../../components/blog/CategoryList.astro';
+import TagCloud from '../../components/blog/TagCloud.astro';
+import ChatbotCTA from '../../components/common/ChatbotCTA.astro';
+import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../utils/content';
+
+// Get URL parameters
+const { page } = Astro.params;
+const currentPage = page ? parseInt(page) : 1;
+
+// Get posts with pagination
+const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9);
+
+// Get categories and tags for sidebar
+const categories = await getAllCategories();
+const tags = await getAllTags();
+
+// Meta information
+const title = 'Blog | Hilfsmittel-Berater';
+const description = 'Lesen Sie informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.';
+---
+
+<Layout>
+  <SEO
+    title={title}
+    description={description}
+  />
+  
+  <Header />
+  
+  <main class="pt-24 pb-16">
+    <!-- Blog Header -->
+    <section class="bg-gradient-to-r from-primary-500 to-secondary-600 text-white py-12 md:py-16">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl">
+          <h1 class="text-3xl md:text-4xl font-heading font-medium mb-4">
+            Blog
+          </h1>
+          <p class="text-lg md:text-xl text-white/90 leading-relaxed">
+            Informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Blog Content -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Blog Posts -->
+          <div class="lg:col-span-2">
+            {posts.length > 0 ? (
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {posts.map((post, index) => (
+                  <BlogCard post={post} featured={index === 0 && currentPage === 1} />
+                ))}
+              </div>
+            ) : (
+              <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                <h2 class="text-xl font-medium mb-4">Keine Beiträge gefunden</h2>
+                <p class="text-gray-600 mb-6">
+                  Zurzeit sind keine Beiträge in dieser Kategorie verfügbar. Bitte versuchen Sie es später noch einmal oder wählen Sie eine andere Kategorie.
+                </p>
+                <a href="/blog" class="text-primary-600 hover:text-primary-800 font-medium">
+                  Zurück zur Blogübersicht
+                </a>
+              </div>
+            )}
+            
+            <!-- Pagination -->
+            {posts.length > 0 && (
+              <Pagination pagination={pagination} basePath="/blog" />
+            )}
+          </div>
+          
+          <!-- Sidebar -->
+          <div class="space-y-8">
+            <!-- Categories Widget -->
+            <CategoryList categories={categories} />
+            
+            <!-- Tags Widget -->
+            <TagCloud tags={tags} />
+            
+            <!-- CTA Widget -->
+            <ChatbotCTA />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>

@@ -1,0 +1,277 @@
+---
+import Layout from './Layout.astro';
+import SEO from '../components/common/SEO.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import ChatbotCTA from '../components/common/ChatbotCTA.astro';
+import RelatedPosts from '../components/blog/RelatedPosts.astro';
+import { formatDate, getReadingTime } from '../utils/helpers';
+import { renderMarkdown, extractHeadings } from '../utils/markdown';
+import type { BlogPost } from '../utils/types';
+
+interface Props {
+  post: BlogPost;
+  relatedPosts: BlogPost[];
+}
+
+const { post, relatedPosts } = Astro.props;
+
+// Destructure slug and body directly from post
+const { slug, body } = post;
+
+// Destructure frontmatter properties from post.data
+const {
+  title,
+  description,
+  publishedDate,
+  updatedDate,
+  author,
+  authorTitle,
+  authorImage,
+  coverImage,
+  imageAlt,
+  categories,
+  tags,
+} = post.data;
+
+// Format date
+const formattedDate = formatDate(publishedDate, 'PPP');
+const formattedUpdateDate = updatedDate ? formatDate(updatedDate, 'PPP') : null;
+
+// Reading time
+const readingTime = getReadingTime(body);
+
+// Render markdown
+const renderedContent = renderMarkdown(body);
+
+// Extract headings for table of contents
+const headings = extractHeadings(body);
+const hasTableOfContents = headings.length > 2;
+
+// Canonical URL
+const canonicalUrl = new URL(`/blog/${slug}`, Astro.site).toString();
+---
+
+<Layout>
+  <SEO
+    title={title}
+    description={description || body.substring(0, 160)}
+    canonicalUrl={canonicalUrl}
+    image={coverImage}
+    imageAlt={imageAlt || title}
+    author={author}
+    publishedDate={publishedDate}
+    updatedDate={updatedDate}
+    type="article"
+  />
+  
+  <Header />
+  
+  <main class="pt-24 pb-16">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-primary-50 to-secondary-50 py-12 md:py-16">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto">
+          <!-- Categories -->
+          {categories?.length > 0 && (
+            <div class="mb-4">
+              {categories.map((category) => (
+                <a 
+                  href={`/blog/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                  class="inline-block mr-2 mb-2 text-sm font-medium bg-white/70 backdrop-blur-sm text-primary-800 px-3 py-1 rounded-full shadow-sm hover:bg-white transition-colors"
+                >
+                  {category}
+                </a>
+              ))}
+            </div>
+          )}
+          
+          <!-- Title -->
+          <h1 class="text-3xl md:text-4xl font-heading font-medium text-gray-900 mb-6">
+            {title}
+          </h1>
+          
+          <!-- Meta info -->
+          <div class="flex flex-wrap items-center text-gray-600 mb-2">
+            <time datetime={publishedDate.toISOString()} class="mr-4 mb-2">
+              <span class="font-medium">Veröffentlicht:</span> {formattedDate}
+            </time>
+            
+            {updatedDate && (
+              <time datetime={updatedDate.toISOString()} class="mr-4 mb-2">
+                <span class="font-medium">Aktualisiert:</span> {formattedUpdateDate}
+              </time>
+            )}
+            
+            <span class="mr-4 mb-2">
+              <span class="font-medium">Lesezeit:</span> {readingTime} Minuten
+            </span>
+          </div>
+          
+          <!-- Author info -->
+          <div class="flex items-center mt-6">
+            <div class="rounded-full overflow-hidden w-12 h-12 mr-3 bg-white">
+              <img 
+                src={authorImage || 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'} 
+                alt={author} 
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">{author}</div>
+              {authorTitle && <div class="text-sm text-gray-600">{authorTitle}</div>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Cover Image -->
+    {coverImage && (
+      <div class="container mx-auto px-4 -mt-6">
+        <div class="max-w-4xl mx-auto">
+          <div class="rounded-xl overflow-hidden shadow-lg aspect-video">
+            <img 
+              src={coverImage} 
+              alt={imageAlt || title} 
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    )}
+    
+    <!-- Content -->
+    <div class="container mx-auto px-4 py-12">
+      <div class="max-w-4xl mx-auto flex flex-col lg:flex-row gap-8">
+        <!-- Table of Contents (Desktop) -->
+        {hasTableOfContents && (
+          <aside class="hidden lg:block lg:w-64 shrink-0">
+            <div class="sticky top-24 bg-white rounded-xl shadow-md p-5">
+              <h2 class="text-lg font-medium mb-3">Inhaltsverzeichnis</h2>
+              <nav>
+                <ul class="space-y-2 text-sm">
+                  {headings.map((heading) => (
+                    <li class={`ml-${(heading.level - 2) * 3}`}>
+                      <a 
+                        href={`#${heading.id}`} 
+                        class="text-gray-700 hover:text-primary-600 transition-colors block py-1"
+                      >
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </aside>
+        )}
+        
+        <!-- Main Content -->
+        <article class="flex-1">
+          <!-- Table of Contents (Mobile) -->
+          {hasTableOfContents && (
+            <details class="mb-8 bg-white rounded-xl shadow-md p-5 lg:hidden">
+              <summary class="text-lg font-medium cursor-pointer">
+                Inhaltsverzeichnis
+              </summary>
+              <nav class="mt-3">
+                <ul class="space-y-2 text-sm">
+                  {headings.map((heading) => (
+                    <li class={`ml-${(heading.level - 2) * 3}`}>
+                      <a 
+                        href={`#${heading.id}`} 
+                        class="text-gray-700 hover:text-primary-600 transition-colors block py-1"
+                      >
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </details>
+          )}
+          
+          <!-- Markdown Content -->
+          <div class="prose prose-lg max-w-none">
+            <Fragment set:html={renderedContent} />
+          </div>
+          
+          <!-- Tags -->
+          {tags?.length > 0 && (
+            <div class="mt-8 pt-6 border-t border-gray-100">
+              <h2 class="text-lg font-medium mb-3">Tags</h2>
+              <div class="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <a 
+                    href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                    class="inline-block px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                  >
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <!-- CTA -->
+          <div class="mt-12">
+            <ChatbotCTA />
+          </div>
+        </article>
+      </div>
+      
+      <!-- Related Posts -->
+      <div class="max-w-4xl mx-auto">
+        <RelatedPosts posts={relatedPosts} />
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<script>
+  // Highlight table of contents item based on scroll position
+  document.addEventListener('DOMContentLoaded', () => {
+    const headings = Array.from(document.querySelectorAll('h2, h3, h4, h5, h6')).filter(el => el.id);
+    const tocLinks = document.querySelectorAll('aside nav a, details nav a');
+    
+    if (headings.length === 0 || tocLinks.length === 0) return;
+    
+    const highlightTocItem = () => {
+      // Get current scroll position with some offset
+      const scrollPos = window.scrollY + 100;
+      
+      // Find the current heading
+      let currentHeadingIndex = 0;
+      for (let i = 0; i < headings.length; i++) {
+        if (scrollPos >= headings[i].offsetTop) {
+          currentHeadingIndex = i;
+        } else {
+          break;
+        }
+      }
+      
+      // Remove active class from all links
+      tocLinks.forEach(link => {
+        link.classList.remove('text-primary-600', 'font-medium');
+        link.classList.add('text-gray-700');
+      });
+      
+      // Add active class to current link
+      const currentId = headings[currentHeadingIndex].id;
+      const activeLink = document.querySelector(`a[href="#${currentId}"]`);
+      if (activeLink) {
+        activeLink.classList.remove('text-gray-700');
+        activeLink.classList.add('text-primary-600', 'font-medium');
+      }
+    };
+    
+    // Listen for scroll events
+    window.addEventListener('scroll', highlightTocItem);
+    
+    // Initial highlight
+    highlightTocItem();
+  });
+</script>

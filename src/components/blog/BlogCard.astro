@@ -1,0 +1,95 @@
+---
+import { formatDate, truncateText, getReadingTime } from '../../utils/helpers';
+import type { BlogPost } from '../../utils/types';
+
+interface Props {
+  post: BlogPost;
+  featured?: boolean;
+}
+
+const { post, featured = false } = Astro.props;
+
+// Destructure slug and body directly from post
+const { slug, body } = post;
+
+// Destructure frontmatter properties from post.data
+const {
+  title,
+  description,
+  publishedDate,
+  coverImage,
+  imageAlt,
+  categories,
+} = post.data;
+
+// Create excerpt if description is not provided
+const excerpt = description || truncateText(body, 160);
+
+// Calculate reading time
+const readingTime = getReadingTime(body);
+
+// Format date
+const formattedDate = formatDate(publishedDate, 'PPP');
+
+// Default image if not provided
+const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+---
+
+<article class={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${featured ? 'md:flex' : ''}`}>
+  <a 
+    href={`/blog/${slug}`} 
+    class={`block w-full overflow-hidden ${featured ? 'md:w-2/5' : 'aspect-video'}`}
+    aria-hidden="true"
+    tabindex="-1"
+  >
+    <img 
+      src={imageUrl} 
+      alt={imageAlt || title} 
+      class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+    />
+  </a>
+  
+  <div class={`p-6 ${featured ? 'md:w-3/5' : ''}`}>
+    {categories?.length > 0 && (
+      <div class="mb-3">
+        <a 
+          href={`/blog/category/${categories[0].toLowerCase().replace(/\s+/g, '-')}`} 
+          class="inline-block text-xs font-medium bg-primary-100 text-primary-800 px-2 py-1 rounded"
+        >
+          {categories[0]}
+        </a>
+      </div>
+    )}
+    
+    <h2 class={`font-heading font-medium ${featured ? 'text-2xl' : 'text-xl'} mb-2 text-gray-900`}>
+      <a 
+        href={`/blog/${slug}`} 
+        class="hover:text-primary-600 transition-colors"
+      >
+        {title}
+      </a>
+    </h2>
+    
+    <p class="text-gray-600 mb-4">
+      {excerpt}
+    </p>
+    
+    <div class="flex items-center justify-between">
+      <div class="text-sm text-gray-500">
+        <time datetime={publishedDate.toISOString()}>{formattedDate}</time>
+        <span class="mx-2">•</span>
+        <span>{readingTime} min Lesezeit</span>
+      </div>
+      
+      <a 
+        href={`/blog/${slug}`} 
+        class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors"
+      >
+        Weiterlesen
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</article>

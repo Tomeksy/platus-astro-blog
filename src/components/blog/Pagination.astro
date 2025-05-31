@@ -1,0 +1,153 @@
+---
+import type { Pagination } from '../../utils/types';
+import { getPaginationPath } from '../../utils/helpers';
+
+interface Props {
+  pagination: Pagination;
+  basePath?: string;
+  category?: string;
+  tag?: string;
+}
+
+const { 
+  pagination, 
+  basePath = '/blog', 
+  category, 
+  tag 
+} = Astro.props;
+
+const {
+  currentPage,
+  totalPages,
+  hasNextPage,
+  hasPrevPage,
+} = pagination;
+
+// Generate page numbers
+const pageNumbers = [];
+const MAX_VISIBLE_PAGES = 5;
+
+if (totalPages <= MAX_VISIBLE_PAGES) {
+  // Show all pages if there are fewer than MAX_VISIBLE_PAGES
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+} else {
+  // Always show first page
+  pageNumbers.push(1);
+  
+  // Calculate start and end page
+  let startPage = Math.max(2, currentPage - 1);
+  let endPage = Math.min(totalPages - 1, currentPage + 1);
+  
+  // Adjust if we're near the beginning
+  if (currentPage <= 3) {
+    startPage = 2;
+    endPage = Math.min(4, totalPages - 1);
+  }
+  
+  // Adjust if we're near the end
+  if (currentPage >= totalPages - 2) {
+    startPage = Math.max(totalPages - 3, 2);
+    endPage = totalPages - 1;
+  }
+  
+  // Add ellipsis after first page if needed
+  if (startPage > 2) {
+    pageNumbers.push('...');
+  }
+  
+  // Add middle pages
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+  
+  // Add ellipsis before last page if needed
+  if (endPage < totalPages - 1) {
+    pageNumbers.push('...');
+  }
+  
+  // Always show last page if more than 1 page
+  if (totalPages > 1) {
+    pageNumbers.push(totalPages);
+  }
+}
+---
+
+<nav aria-label="Pagination" class="my-8">
+  <ul class="flex flex-wrap justify-center items-center space-x-1">
+    <!-- Previous page button -->
+    <li>
+      {hasPrevPage ? (
+        <a
+          href={getPaginationPath(basePath, currentPage - 1, category, tag)}
+          class="flex items-center px-3 py-2 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+          aria-label="Vorherige Seite"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Zurück
+        </a>
+      ) : (
+        <span
+          class="flex items-center px-3 py-2 rounded-md border border-gray-200 text-sm text-gray-400 bg-gray-50 cursor-not-allowed"
+          aria-disabled="true"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Zurück
+        </span>
+      )}
+    </li>
+    
+    <!-- Page numbers -->
+    {pageNumbers.map((page, index) => (
+      <li>
+        {typeof page === 'number' ? (
+          <a
+            href={getPaginationPath(basePath, page, category, tag)}
+            class={`px-4 py-2 rounded-md text-sm font-medium ${
+              currentPage === page 
+                ? 'bg-primary-600 text-white' 
+                : 'text-gray-700 hover:bg-gray-50 border border-gray-300'
+            }`}
+            aria-label={`Seite ${page}`}
+            aria-current={currentPage === page ? 'page' : undefined}
+          >
+            {page}
+          </a>
+        ) : (
+          <span class="px-2 text-gray-500">...</span>
+        )}
+      </li>
+    ))}
+    
+    <!-- Next page button -->
+    <li>
+      {hasNextPage ? (
+        <a
+          href={getPaginationPath(basePath, currentPage + 1, category, tag)}
+          class="flex items-center px-3 py-2 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+          aria-label="Nächste Seite"
+        >
+          Weiter
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      ) : (
+        <span
+          class="flex items-center px-3 py-2 rounded-md border border-gray-200 text-sm text-gray-400 bg-gray-50 cursor-not-allowed"
+          aria-disabled="true"
+        >
+          Weiter
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      )}
+    </li>
+  </ul>
+</nav>

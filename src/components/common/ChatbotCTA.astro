@@ -1,0 +1,40 @@
+---
+interface Props {
+  variant?: 'inline' | 'block';
+  className?: string;
+}
+
+const { 
+  variant = 'block',
+  className = ''
+} = Astro.props;
+
+const chatbotUrl = import.meta.env.PUBLIC_CHATBOT_URL;
+
+// Determine classes based on variant
+const wrapperClasses = variant === 'inline' 
+  ? `inline-flex items-center ${className}`
+  : `bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6 md:p-8 ${className}`;
+
+const buttonClasses = variant === 'inline'
+  ? 'inline-flex items-center px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-md shadow-sm transition-colors'
+  : 'inline-flex items-center px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white rounded-md shadow-sm transition-colors text-lg';
+---
+
+<div class={wrapperClasses}>
+  {variant === 'block' && (
+    <div class="mb-4">
+      <h3 class="text-xl md:text-2xl font-heading font-medium mb-2">Haben Sie weitere Fragen?</h3>
+      <p class="text-gray-700">
+        Unser Chatbot kann Ihnen sofort bei spezifischen Fragen zu Hilfsmitteln und Finanzierungsmöglichkeiten helfen.
+      </p>
+    </div>
+  )}
+  
+  <a href={chatbotUrl} class={buttonClasses} target="_blank" rel="noopener">
+    <span>{variant === 'inline' ? 'Chatbot öffnen' : 'Jetzt mit unserem Chatbot sprechen'}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+    </svg>
+  </a>
+</div>

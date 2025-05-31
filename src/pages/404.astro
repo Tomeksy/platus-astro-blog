@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEO from '../components/common/SEO.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+
+// Meta information
+const title = 'Seite nicht gefunden | Hilfsmittel-Berater';
+const description = 'Die gesuchte Seite konnte nicht gefunden werden.';
+---
+
+<Layout>
+  <SEO
+    title={title}
+    description={description}
+    noindex={true}
+  />
+  
+  <Header />
+  
+  <main class="pt-24 pb-16 flex items-center min-h-[70vh]">
+    <div class="container mx-auto px-4 text-center">
+      <div class="max-w-md mx-auto">
+        <div class="text-6xl font-bold text-primary-600 mb-4">404</div>
+        <h1 class="text-3xl font-heading font-medium mb-4">Seite nicht gefunden</h1>
+        <p class="text-gray-600 mb-8">
+          Die von Ihnen gesuchte Seite existiert nicht oder wurde verschoben.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a 
+            href="/" 
+            class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-md shadow-sm transition-colors"
+          >
+            Zur Startseite
+          </a>
+          <a 
+            href="/blog" 
+            class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md shadow-sm transition-colors"
+          >
+            Zum Blog
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>

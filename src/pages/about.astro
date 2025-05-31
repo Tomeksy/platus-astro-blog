@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SEO from '../components/common/SEO.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import ChatbotCTA from '../components/common/ChatbotCTA.astro';
+
+// Meta information
+const title = 'Über uns | Hilfsmittel-Berater';
+const description = 'Erfahren Sie mehr über Hilfsmittel-Berater.at und unser Engagement für Menschen mit Kommunikationsbeeinträchtigungen.';
+---
+
+<Layout>
+  <SEO
+    title={title}
+    description={description}
+  />
+  
+  <Header />
+  
+  <main class="pt-24 pb-16">
+    <!-- About Header -->
+    <section class="bg-gradient-to-r from-primary-500 to-secondary-600 text-white py-12 md:py-16">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl">
+          <h1 class="text-3xl md:text-4xl font-heading font-medium mb-4">
+            Über uns
+          </h1>
+          <p class="text-lg md:text-xl text-white/90 leading-relaxed">
+            Wir sind eine vertrauenswürdige Informationsquelle für Menschen mit Kommunikationsbeeinträchtigungen und deren Betreuer.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- About Content -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 md:p-12">
+          <div class="prose prose-lg max-w-none">
+            <h2>Unsere Mission</h2>
+            <p>
+              Bei Hilfsmittel-Berater.at ist es unser Ziel, umfassende und zugängliche Informationen über Kommunikationshilfsmittel für Menschen mit Beeinträchtigungen bereitzustellen. Wir glauben, dass jeder Mensch das Recht hat, sich auszudrücken und an der Gesellschaft teilzuhaben, unabhängig von körperlichen oder kognitiven Einschränkungen.
+            </p>
+            
+            <h2>Was wir tun</h2>
+            <p>
+              Wir bieten fundierte, leicht verständliche Informationen über:
+            </p>
+            <ul>
+              <li>Verschiedene Kommunikationshilfsmittel und -technologien</li>
+              <li>Ansprüche auf Hilfsmittel und Finanzierungsmöglichkeiten</li>
+              <li>Erfolgsgeschichten und praktische Tipps von Betroffenen und Fachleuten</li>
+              <li>Aktuelle Entwicklungen im Bereich der unterstützten Kommunikation</li>
+            </ul>
+            
+            <h2>Über Platus</h2>
+            <p>
+              Hilfsmittel-Berater.at wird betrieben von <a href={import.meta.env.PUBLIC_MAIN_SITE_URL} target="_blank" rel="noopener">Platus</a>, einem führenden Anbieter von Lösungen für unterstützte Kommunikation in Österreich. Als Spezialisten für augmentative und alternative Kommunikation (AAC) und Augensteuerungstechnologie bietet Platus umfassende Unterstützung für Menschen mit Kommunikationsbeeinträchtigungen aufgrund verschiedener Erkrankungen und Behinderungen.
+            </p>
+            
+            <blockquote>
+              <p>
+                "Wir glauben, dass Kommunikation ein grundlegendes Menschenrecht ist. Unsere Arbeit ist es, die bestmöglichen Lösungen zu finden, damit jeder Mensch seine Gedanken, Wünsche und Bedürfnisse ausdrücken kann."
+              </p>
+              <footer>— Das Platus-Team</footer>
+            </blockquote>
+            
+            <h2>Unsere Expertise</h2>
+            <p>
+              Unser Team verfügt über umfangreiche Erfahrung in der Beratung und Unterstützung von Menschen mit verschiedenen Erkrankungen und Behinderungen, darunter:
+            </p>
+            <ul>
+              <li>Motoneuronerkrankungen (ALS, SMA)</li>
+              <li>Zerebralparese</li>
+              <li>Autismus-Spektrum-Störungen</li>
+              <li>Intellektuelle Beeinträchtigungen</li>
+              <li>Locked-in-Syndrom</li>
+              <li>Aphasie</li>
+              <li>Und weitere Zustände, die die Kommunikationsfähigkeit beeinträchtigen</li>
+            </ul>
+            
+            <h2>Finanzierung von Hilfsmitteln</h2>
+            <p>
+              Ein wichtiger Aspekt unserer Informationsarbeit ist die Aufklärung über Finanzierungsmöglichkeiten. Die meisten Kommunikationshilfsmittel werden vollständig von Krankenkassen, Sozialversicherungsträgern oder anderen öffentlichen Stellen finanziert. Wir helfen Ihnen dabei, den oft komplexen Prozess der Beantragung zu verstehen.
+            </p>
+            
+            <h2>Kontakt</h2>
+            <p>
+              Haben Sie Fragen zu Kommunikationshilfsmitteln oder benötigen Sie persönliche Beratung? Unser Chatbot steht Ihnen rund um die Uhr zur Verfügung und kann Ihnen sofort weiterhelfen.
+            </p>
+          </div>
+          
+          <div class="mt-12">
+            <ChatbotCTA />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
