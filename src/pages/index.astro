@@ -384,7 +384,7 @@ const description = 'Informationsquelle f√ºr Menschen mit Kommunikationsbeeintr√
                 <div class="text-white/80">Chatbot Verf√ºgbarkeit</div>
               </div>
               <div>
-                <div class="text-3xl md:text-4xl font-bold mb-2">15+</div>
+                <div id="years-experience-about" class="text-3xl md:text-4xl font-bold mb-2">21+</div>
                 <div class="text-white/80">Jahre Erfahrung</div>
               </div>
             </div>
@@ -527,6 +527,12 @@ const description = 'Informationsquelle f√ºr Menschen mit Kommunikationsbeeintr√
     const experienceElementMobile = document.getElementById('years-experience-mobile');
     if (experienceElementMobile) {
       experienceElementMobile.textContent = yearsOfExperience.toString();
+    }
+    
+    // Update about section version
+    const experienceElementAbout = document.getElementById('years-experience-about');
+    if (experienceElementAbout) {
+      experienceElementAbout.textContent = yearsOfExperience.toString() + '+';
     }
   });
 </script>
