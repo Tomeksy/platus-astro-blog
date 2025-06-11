@@ -139,7 +139,7 @@ const description = 'Informationsquelle f√ºr Menschen mit Kommunikationsbeeintr√
                     </svg>
                   </div>
                   <div>
-                    <div class="text-2xl font-bold text-gray-900">21</div>
+                    <div id="years-experience" class="text-2xl font-bold text-gray-900">21</div>
                     <div class="text-sm text-gray-600">Jahre Erfahrung</div>
                   </div>
                 </div>
@@ -481,3 +481,17 @@ const description = 'Informationsquelle f√ºr Menschen mit Kommunikationsbeeintr√
   
   <Footer />
 </Layout>
+
+<script>
+  // Calculate years of experience dynamically
+  document.addEventListener('DOMContentLoaded', function() {
+    const foundingYear = 2004;
+    const currentYear = new Date().getFullYear();
+    const yearsOfExperience = currentYear - foundingYear;
+    
+    const experienceElement = document.getElementById('years-experience');
+    if (experienceElement) {
+      experienceElement.textContent = yearsOfExperience.toString();
+    }
+  });
+</script>
