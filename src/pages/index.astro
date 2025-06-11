@@ -10,6 +10,13 @@ import { getFeaturedPosts, getPaginatedBlogPosts } from '../utils/content';
 // Get featured posts
 const featuredPosts = await getFeaturedPosts(3);
 
+// Get latest posts (excluding featured ones)
+const { posts: latestPosts } = await getPaginatedBlogPosts(1, 6);
+
+// Filter out featured posts from latest posts to avoid duplication
+const featuredIds = featuredPosts.map(post => post.id);
+const filteredLatestPosts = latestPosts.filter(post => !featuredIds.includes(post.id));
+
 // Meta information
 const title = 'Hilfsmittel-Berater | Informationen zu Kommunikationshilfen';
 const description = 'Informationsquelle für Menschen mit Kommunikationsbeeinträchtigungen und deren Betreuer. Erfahren Sie mehr über Hilfsmittel und Finanzierungsmöglichkeiten.';
@@ -59,53 +66,7 @@ const description = 'Informationsquelle für Menschen mit Kommunikationsbeeintr�
         </div>
       </div>
     </section>
-
-    <!-- Who We Are Section -->
-    <section class="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <!-- Image -->
-          <div class="rounded-xl overflow-hidden shadow-lg">
-            <img 
-              src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
-              alt="Team von Experten für unterstützte Kommunikation" 
-              class="w-full h-full object-cover"
-            />
-          </div>
-          
-          <!-- Content -->
-          <div>
-            <div class="mb-4">
-              <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                WER WIR SIND
-              </span>
-            </div>
-            <h2 class="text-3xl md:text-4xl font-heading font-medium mb-6 text-gray-900">
-              Ein Team von Experten, leidenschaftlich für neue Technologien & Fortschritt
-            </h2>
-            <p class="text-gray-700 mb-8 leading-relaxed text-lg">
-              Seit über einem Jahrzehnt unterstützen wir Menschen mit Kommunikationsbeeinträchtigungen dabei, ihre Stimme zu finden. Unser erfahrenes Team aus Therapeuten, Technikern und Beratern arbeitet täglich daran, die neuesten Technologien zugänglich zu machen und individuelle Lösungen zu entwickeln.
-            </p>
-            
-            <div class="grid grid-cols-2 gap-8">
-              <div class="text-center">
-                <div class="text-3xl md:text-4xl font-bold text-primary-600 mb-2">
-                  seit 2012
-                </div>
-                <div class="text-gray-600 font-medium">Ein Jahrzehnt Expertise</div>
-              </div>
-              <div class="text-center">
-                <div class="text-3xl md:text-4xl font-bold text-primary-600 mb-2">
-                  98,5%
-                </div>
-                <div class="text-gray-600 font-medium">Zufriedene Kunden</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    
     <!-- Featured Posts Section -->
     {featuredPosts.length > 0 && (
       <section class="py-16 bg-white">
@@ -120,7 +81,71 @@ const description = 'Informationsquelle für Menschen mit Kommunikationsbeeintr�
         </div>
       </section>
     )}
-
+    
+    <!-- Latest Posts Section -->
+    <section class="py-16">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl md:text-3xl font-heading font-medium">Neueste Artikel</h2>
+          <a 
+            href="/blog" 
+            class="text-primary-600 hover:text-primary-800 font-medium inline-flex items-center transition-colors"
+          >
+            Alle Artikel
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredLatestPosts.slice(0, 6).map((post) => (
+            <BlogCard post={post} />
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Info Sections -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+          <!-- About AAC Section -->
+          <div class="flex flex-col justify-center">
+            <div class="mb-4">
+              <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium">
+                Unterstützte Kommunikation
+              </span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-medium mb-6">
+              Was ist UK/AAC?
+            </h2>
+            <p class="text-gray-700 mb-6 leading-relaxed">
+              Unterstützte Kommunikation (UK) oder Augmentative und Alternative Kommunikation (AAC) umfasst alle Methoden, die Menschen mit Kommunikationsbeeinträchtigungen helfen, sich auszudrücken. Von einfachen Hilfsmitteln bis zu hochentwickelten Augensystemen - wir informieren Sie über die Möglichkeiten.
+            </p>
+            <a 
+              href="/blog/categories" 
+              class="text-primary-600 hover:text-primary-800 font-medium inline-flex items-center transition-colors"
+            >
+              Mehr erfahren
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </div>
+          
+          <!-- Image -->
+          <div class="rounded-xl overflow-hidden shadow-lg">
+            <img 
+              src="https://images.pexels.com/photos/8942991/pexels-photo-8942991.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+              alt="Person using assistive technology device" 
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+    
     <!-- Funding Information Section -->
     <section class="py-16">
       <div class="container mx-auto px-4">
@@ -160,118 +185,7 @@ const description = 'Informationsquelle für Menschen mit Kommunikationsbeeintr�
         </div>
       </div>
     </section>
-
-    <!-- Why Work With Us Section -->
-    <section class="py-16 bg-gradient-to-br from-gray-900 to-primary-900 text-white relative overflow-hidden">
-      <!-- Background decoration -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-400 rounded-full -translate-y-48 translate-x-48"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary-400 rounded-full translate-y-32 -translate-x-32"></div>
-      </div>
-      
-      <div class="container mx-auto px-4 relative">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <!-- Content -->
-          <div>
-            <div class="mb-4">
-              <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                WARUM MIT UNS ARBEITEN
-              </span>
-            </div>
-            <h2 class="text-3xl md:text-4xl font-heading font-medium mb-6">
-              Wir garantieren moderne Ansätze & langanhaltende Ergebnisse
-            </h2>
-            <p class="text-white/90 mb-8 leading-relaxed text-lg">
-              Unsere bewährten Methoden und innovativen Technologien sorgen dafür, dass Sie die bestmögliche Unterstützung erhalten. Mit unserem ganzheitlichen Ansatz begleiten wir Sie von der ersten Beratung bis zur erfolgreichen Umsetzung Ihrer Kommunikationslösung.
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium mb-1">Führende Branchenexperten</h3>
-                  <p class="text-white/80 text-sm">Zertifizierte Fachkräfte mit jahrelanger Erfahrung</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium mb-1">Komplexe Lösungen</h3>
-                  <p class="text-white/80 text-sm">Individuelle Ansätze für jede Situation</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium mb-1">100% Kostenübernahme</h3>
-                  <p class="text-white/80 text-sm">Vollständige Finanzierung durch Krankenkassen</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium mb-1">Flexible Preisgestaltung</h3>
-                  <p class="text-white/80 text-sm">Angepasst an Ihre individuellen Bedürfnisse</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium mb-1">Kontinuierliche Innovation</h3>
-                  <p class="text-white/80 text-sm">Neueste Technologien und Methoden</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center mt-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="font-medium mb-1">24/7 Kundensupport</h3>
-                  <p class="text-white/80 text-sm">Immer für Sie da, wenn Sie uns brauchen</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Image -->
-          <div class="rounded-xl overflow-hidden shadow-2xl">
-            <img 
-              src="https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
-              alt="Team arbeitet zusammen an innovativen Lösungen" 
-              class="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-
+    
     <!-- Chatbot Benefits Section -->
     <section class="py-16 bg-white">
       <div class="container mx-auto px-4">
@@ -340,115 +254,6 @@ const description = 'Informationsquelle für Menschen mit Kommunikationsbeeintr�
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- What Our Clients Say Section -->
-    <section class="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-2xl md:text-3xl font-heading font-medium mb-4 text-primary-600">
-            Was unsere Kunden über uns sagen
-          </h2>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- Testimonial 1 -->
-          <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div class="mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-              </svg>
-            </div>
-            <h3 class="font-medium text-lg mb-3">Höchste Qualität & Service</h3>
-            <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-              Die Beratung war außergewöhnlich professionell. Das Team hat uns durch den gesamten Prozess begleitet und eine perfekte Lösung für unsere Tochter gefunden.
-            </p>
-            <div class="flex items-center">
-              <img 
-                src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" 
-                alt="Maria Schneider" 
-                class="w-10 h-10 rounded-full object-cover mr-3"
-              />
-              <div>
-                <div class="font-medium text-sm">Maria Schneider</div>
-                <div class="text-gray-500 text-xs">Mutter von Anna, 8 Jahre</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Testimonial 2 -->
-          <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div class="mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-              </svg>
-            </div>
-            <h3 class="font-medium text-lg mb-3">Außergewöhnlicher Service</h3>
-            <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-              Von der ersten Beratung bis zur Einschulung - alles war perfekt organisiert. Die Finanzierung wurde komplett übernommen und das Gerät funktioniert einwandfrei.
-            </p>
-            <div class="flex items-center">
-              <img 
-                src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" 
-                alt="Thomas Weber" 
-                class="w-10 h-10 rounded-full object-cover mr-3"
-              />
-              <div>
-                <div class="font-medium text-sm">Thomas Weber</div>
-                <div class="text-gray-500 text-xs">Ergotherapeut - Praxis Weber</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Testimonial 3 -->
-          <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div class="mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-              </svg>
-            </div>
-            <h3 class="font-medium text-lg mb-3">Kommunikation auf neuem Level</h3>
-            <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-              Dank der modernen Augensteuerung kann mein Mann wieder vollständig kommunizieren. Die Lebensqualität hat sich dramatisch verbessert. Vielen Dank!
-            </p>
-            <div class="flex items-center">
-              <img 
-                src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" 
-                alt="Sandra Müller" 
-                class="w-10 h-10 rounded-full object-cover mr-3"
-              />
-              <div>
-                <div class="font-medium text-sm">Sandra Müller</div>
-                <div class="text-gray-500 text-xs">Angehörige - ALS Patient</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Testimonial 4 -->
-          <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div class="mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-              </svg>
-            </div>
-            <h3 class="font-medium text-lg mb-3">Großartige Erfahrung</h3>
-            <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-              Als Logopädin arbeite ich regelmäßig mit Platus zusammen. Die Kompetenz und der Service sind unübertroffen. Meine Patienten sind immer begeistert.
-            </p>
-            <div class="flex items-center">
-              <img 
-                src="https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" 
-                alt="Dr. Lisa Hoffmann" 
-                class="w-10 h-10 rounded-full object-cover mr-3"
-              />
-              <div>
-                <div class="font-medium text-sm">Dr. Lisa Hoffmann</div>
-                <div class="text-gray-500 text-xs">Logopädin - Therapiezentrum Wien</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
