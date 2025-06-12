@@ -35,10 +35,10 @@ const formattedDate = formatDate(publishedDate, 'PPP');
 const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 ---
 
-<article class={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col ${featured ? 'md:flex-row md:h-auto' : ''}`}>
+<article class={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${featured ? 'md:flex md:h-auto' : 'h-full flex flex-col'}`}>
   <a 
     href={`/blog/${slug}`} 
-    class={`block w-full overflow-hidden ${featured ? 'md:w-2/5 md:h-auto' : 'aspect-video flex-shrink-0'}`}
+    class={`block overflow-hidden ${featured ? 'md:w-2/5 md:h-auto w-full aspect-video' : 'w-full aspect-video flex-shrink-0'}`}
     aria-hidden="true"
     tabindex="-1"
   >
@@ -49,9 +49,9 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
     />
   </a>
   
-  <div class={`p-6 flex flex-col ${featured ? 'md:w-3/5' : 'flex-1'}`}>
+  <div class={`p-6 ${featured ? 'md:w-3/5 flex flex-col' : 'flex flex-col flex-1'}`}>
     {categories?.length > 0 && (
-      <div class="mb-3">
+      <div class="mb-3 flex-shrink-0">
         <a 
           href={`/blog/category/${categories[0].toLowerCase().replace(/\s+/g, '-')}`} 
           class="inline-block text-xs font-medium bg-primary-100 text-primary-800 px-2 py-1 rounded"
@@ -61,7 +61,7 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
       </div>
     )}
     
-    <h2 class={`font-heading font-medium ${featured ? 'text-2xl' : 'text-xl'} mb-2 text-gray-900`}>
+    <h2 class={`font-heading font-medium ${featured ? 'text-2xl' : 'text-xl'} mb-2 text-gray-900 flex-shrink-0`}>
       <a 
         href={`/blog/${slug}`} 
         class={`hover:text-primary-600 transition-colors block ${featured ? 'line-clamp-3' : 'line-clamp-2'}`}
@@ -74,8 +74,8 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
       {excerpt}
     </p>
     
-    <div class="flex items-center justify-between mt-auto">
-      <div class="text-sm text-gray-500">
+    <div class="flex items-center justify-between flex-shrink-0">
+      <div class="text-sm text-gray-500 flex-1 min-w-0">
         <time datetime={publishedDate.toISOString()}>{formattedDate}</time>
         <span class="mx-2">•</span>
         <span>{readingTime} min Lesezeit</span>
@@ -83,7 +83,7 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
       
       <a 
         href={`/blog/${slug}`} 
-        class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors flex-shrink-0"
+        class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors flex-shrink-0 ml-4"
       >
         Weiterlesen
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
