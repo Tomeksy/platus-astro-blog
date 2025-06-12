@@ -13,7 +13,6 @@ const blog = defineCollection({
     coverImage: z.string().url().optional(),
     imageAlt: z.string().optional(),
     categories: z.array(z.string()),
-    tags: z.array(z.string()),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false)
   })
