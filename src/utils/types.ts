@@ -1,22 +1,24 @@
-// Types for Airtable data
+// Types for blog content
 
 export interface BlogPost {
   id: string;
   slug: string;
-  title: string;
-  description: string;
-  content: string; // Markdown content
-  publishedDate: Date;
-  updatedDate?: Date;
-  author: string;
-  authorTitle?: string;
-  authorImage?: string;
-  coverImage?: string;
-  imageAlt?: string;
-  categories: string[];
-  tags: string[];
-  featured: boolean;
-  status: 'draft' | 'published';
+  body: string;
+  data: {
+    title: string;
+    description?: string;
+    publishedDate: Date;
+    updatedDate?: Date;
+    author: string;
+    authorTitle?: string;
+    authorImage?: string;
+    coverImage?: string;
+    imageAlt?: string;
+    categories: string[];
+    tags: string[];
+    featured: boolean;
+    draft: boolean;
+  };
 }
 
 export interface Pagination {
