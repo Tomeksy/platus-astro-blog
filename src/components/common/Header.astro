@@ -13,12 +13,12 @@ const topCategories = categories.filter(cat => mainCategories.includes(cat.name)
 ---
 
 <header id="site-header" class="fixed w-full top-0 z-50 transition-all duration-300">
-  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+  <div class="container mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
     <a href="/" class="relative z-10">
       <img 
         src="https://harvestflowclients.s3.eu-north-1.amazonaws.com/dark_logo_speakii.png" 
         alt="Speakii Der Hilfsmittelberater Logo" 
-        class="w-auto h-12 md:h-16"
+        class="w-auto h-10 md:h-14 lg:h-16 xl:h-18 transition-all duration-300"
       />
     </a>
     
@@ -205,12 +205,12 @@ const topCategories = categories.filter(cat => mainCategories.includes(cat.name)
   function updateHeaderStyles() {
     if (window.scrollY > 50) {
       header.classList.add('bg-white', 'shadow-md');
-      header.classList.remove('py-4');
-      header.classList.add('py-3');
+      header.classList.remove('py-3', 'md:py-4');
+      header.classList.add('py-2', 'md:py-3');
     } else {
       header.classList.remove('bg-white', 'shadow-md');
-      header.classList.add('py-4');
-      header.classList.remove('py-3');
+      header.classList.add('py-3', 'md:py-4');
+      header.classList.remove('py-2', 'md:py-3');
     }
     
     // Auto-hide header when scrolling down on mobile
