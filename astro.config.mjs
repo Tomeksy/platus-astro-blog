@@ -8,7 +8,7 @@ export default defineConfig({
   integrations: [tailwind()],
   output: 'server',
   adapter: netlify(),
-  site: 'https://hilfsmittel-berater.at',
+  site: 'https://endearing-lily-dade62.netlify.app',
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp'
