@@ -30,46 +30,10 @@ export interface BlogPostsResponse {
   pagination: Pagination;
 }
 
-// Search function for blog posts
-function searchPosts(posts: BlogPost[], query: string): BlogPost[] {
-  if (!query) return posts;
-  
-  const searchTerm = query.toLowerCase();
-  return posts.filter(post => {
-    const title = post.data.title.toLowerCase();
-    const description = (post.data.description || '').toLowerCase();
-    const categories = post.data.categories.join(' ').toLowerCase();
-    const tags = post.data.tags.join(' ').toLowerCase();
-    const body = post.body.toLowerCase();
-    
-    return title.includes(searchTerm) ||
-           description.includes(searchTerm) ||
-           categories.includes(searchTerm) ||
-           tags.includes(searchTerm) ||
-           body.includes(searchTerm);
-  });
-}
-
-// Sort function for blog posts
-function sortPosts(posts: BlogPost[], sortBy: string): BlogPost[] {
-  switch (sortBy) {
-    case 'oldest':
-      return [...posts].sort((a, b) => a.data.publishedDate.getTime() - b.data.publishedDate.getTime());
-    case 'title-asc':
-      return [...posts].sort((a, b) => a.data.title.localeCompare(b.data.title));
-    case 'title-desc':
-      return [...posts].sort((a, b) => b.data.title.localeCompare(a.data.title));
-    case 'newest':
-    default:
-      return [...posts].sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
-  }
-}
-
 // Get all published blog posts
 export async function getAllBlogPosts(): Promise<BlogPost[]> {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-  // Always sort by newest first (most recent at top)
-  return sortPosts(posts, 'newest');
+  return posts.sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
 }
 
 // Get a single blog post by slug
@@ -83,26 +47,15 @@ export async function getPaginatedBlogPosts(
   page: number = 1,
   itemsPerPage: number = 10,
   category?: string,
-  tag?: string,
-  search?: string,
-  sort: string = 'newest'
+  tag?: string
 ): Promise<BlogPostsResponse> {
   let posts = await getAllBlogPosts();
   
-  // Apply search filter first
-  if (search) {
-    posts = searchPosts(posts, search);
-  }
-  
   // Filter by category if specified
   if (category) {
-    console.log('Filtering by category:', category);
-    console.log('Available posts before filtering:', posts.length);
     posts = posts.filter(post => 
       post.data.categories.some(cat => slugify(cat) === category)
     );
-    console.log('Posts after category filtering:', posts.length);
-    console.log('Sample post categories:', posts.length > 0 ? posts[0].data.categories : 'No posts');
   }
   
   // Filter by tag if specified
@@ -111,9 +64,6 @@ export async function getPaginatedBlogPosts(
       post.data.tags.some(t => slugify(t) === tag)
     );
   }
-  
-  // Apply sorting
-  posts = sortPosts(posts, sort);
   
   const totalItems = posts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);

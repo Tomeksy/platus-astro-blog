@@ -4,56 +4,26 @@ import SEO from '../../components/common/SEO.astro';
 import Header from '../../components/common/Header.astro';
 import Footer from '../../components/common/Footer.astro';
 import BlogCard from '../../components/blog/BlogCard.astro';
-import InfiniteScroll from '../../components/blog/InfiniteScroll.astro';
-import SearchAndFilter from '../../components/blog/SearchAndFilter.astro';
+import Pagination from '../../components/blog/Pagination.astro';
+import CategoryList from '../../components/blog/CategoryList.astro';
+import TagCloud from '../../components/blog/TagCloud.astro';
 import ChatbotCTA from '../../components/common/ChatbotCTA.astro';
 import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../utils/content';
 
 // Get URL parameters
-const url = Astro.url;
-const currentPage = 1; // Always start with page 1 for infinite scroll
-const category = url.searchParams.get('category') || undefined;
-const tag = url.searchParams.get('tag') || undefined;
-const search = url.searchParams.get('search') || undefined;
-const sort = url.searchParams.get('sort') || 'newest';
-
-// Debug logging
-console.log('URL params:', {
-  category,
-  tag,
-  search,
-  sort,
-  fullURL: url.toString()
-});
+const { page } = Astro.params;
+const currentPage = page ? parseInt(page) : 1;
 
 // Get posts with pagination
-const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 12, category, tag, search, sort);
+const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9);
 
 // Get categories and tags for sidebar
 const categories = await getAllCategories();
 const tags = await getAllTags();
 
 // Meta information
-let title = 'Blog | Hilfsmittel-Berater';
-let description = 'Entdecke informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.';
-
-// Update title and description based on filters
-if (search) {
-  title = `Suchergebnisse für "${search}" | Hilfsmittel-Berater Blog`;
-  description = `Suchergebnisse für "${search}" - Finde relevante Artikel über Kommunikationshilfen und unterstützte Kommunikation.`;
-} else if (category) {
-  const categoryInfo = categories.find(cat => cat.slug === category);
-  if (categoryInfo) {
-    title = `${categoryInfo.name} | Hilfsmittel-Berater Blog`;
-    description = `Entdecke informative Artikel über ${categoryInfo.name} für Menschen mit Kommunikationsbeeinträchtigungen.`;
-  }
-} else if (tag) {
-  const tagInfo = tags.find(t => t.slug === tag);
-  if (tagInfo) {
-    title = `${tagInfo.name} | Hilfsmittel-Berater Blog`;
-    description = `Entdecke informative Artikel zum Thema ${tagInfo.name} für Menschen mit Kommunikationsbeeinträchtigungen.`;
-  }
-}
+const title = 'Blog | Hilfsmittel-Berater';
+const description = 'Entdecke informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.';
 ---
 
 <Layout>
@@ -69,27 +39,11 @@ if (search) {
     <section class="bg-gradient-to-r from-primary-500 to-secondary-600 text-white py-12 md:py-16">
       <div class="container mx-auto px-4">
         <div class="max-w-3xl">
-          {(category || tag || search) && (
-            <div class="mb-4">
-              <a href="/blog" class="inline-flex items-center text-white/80 hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Zurück zum Blog
-              </a>
-            </div>
-          )}
           <h1 class="text-3xl md:text-4xl font-heading font-medium mb-4">
-            {search ? `Suchergebnisse für "${search}"` : 
-             category ? categories.find(cat => cat.slug === category)?.name || 'Blog' :
-             tag ? `Tag: ${tags.find(t => t.slug === tag)?.name || tag}` :
-             'Blog'}
+            Blog
           </h1>
           <p class="text-lg md:text-xl text-white/90 leading-relaxed">
-            {search ? `${posts.length} ${posts.length === 1 ? 'Artikel gefunden' : 'Artikel gefunden'}` :
-             category ? `${posts.length} ${posts.length === 1 ? 'Artikel' : 'Artikel'} in dieser Kategorie` :
-             tag ? `${posts.length} ${posts.length === 1 ? 'Artikel' : 'Artikel'} mit diesem Tag` :
-             'Entdecke informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.'}
+            Entdecke informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.
           </p>
         </div>
       </div>
@@ -101,85 +55,38 @@ if (search) {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- Blog Posts -->
           <div class="lg:col-span-2">
-            <!-- Search and Filter Component -->
-            <SearchAndFilter 
-              categories={categories} 
-              tags={tags} 
-              currentCategory={category}
-              currentTag={tag}
-              searchQuery={search}
-            />
-            
-            <!-- Data attributes for infinite scroll -->
-            <div 
-              data-current-page={currentPage}
-              data-total-pages={pagination.totalPages}
-              data-category={category || ''}
-              data-tag={tag || ''}
-              style="display: none;"
-            ></div>
-            
             {posts.length > 0 ? (
-              <div>
-                <InfiniteScroll 
-                  initialPosts={posts}
-                  totalPages={pagination.totalPages}
-                  currentPage={currentPage}
-                  category={category}
-                  tag={tag}
-                />
-                
-                <!-- Initial posts rendered server-side -->
-                <div id="blog-posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-start">
-                  {posts.map((post, index) => (
-                    <BlogCard post={post} featured={false} />
-                  ))}
-                </div>
-                
-                <!-- Loading indicator -->
-                <div id="loading-indicator" class="hidden text-center py-8">
-                  <div class="inline-flex items-center px-4 py-2 bg-primary-100 text-primary-700 rounded-lg">
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Weitere Artikel werden geladen...
-                  </div>
-                </div>
-                
-                <!-- End of posts indicator -->
-                <div id="end-indicator" class="hidden text-center py-8">
-                  <div class="bg-gray-100 text-gray-600 px-4 py-3 rounded-lg">
-                    <p class="font-medium mb-2">Das waren alle Artikel!</p>
-                    <p class="text-sm">Du hast alle verfügbaren Artikel gesehen.</p>
-                  </div>
-                </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-start">
+                {posts.map((post, index) => (
+                  <BlogCard post={post} featured={index === 0 && currentPage === 1} />
+                ))}
               </div>
             ) : (
               <div class="bg-white rounded-xl shadow-md p-8 text-center">
-                <h2 class="text-xl font-medium mb-4">
-                  {search ? 'Keine Suchergebnisse gefunden' : 'Keine Beiträge gefunden'}
-                </h2>
+                <h2 class="text-xl font-medium mb-4">Keine Beiträge gefunden</h2>
                 <p class="text-gray-600 mb-6">
-                  {search ? 
-                    `Für "${search}" wurden keine Artikel gefunden. Versuche es mit anderen Suchbegriffen oder entferne Filter.` :
-                    'Zurzeit sind keine Beiträge verfügbar. Bitte versuche es später noch einmal oder wähle eine andere Kategorie.'
-                  }
+                  Zurzeit sind keine Beiträge verfügbar. Bitte versuche es später noch einmal oder wähle eine andere Kategorie.
                 </p>
-                {search && (
-                  <button 
-                    onclick="window.location.href='/blog'"
-                    class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-                  >
-                    Alle Artikel anzeigen
-                  </button>
-                )}
+                <a href="/blog" class="text-primary-600 hover:text-primary-800 font-medium">
+                  Zurück zur Blogübersicht
+                </a>
               </div>
+            )}
+            
+            <!-- Pagination -->
+            {posts.length > 0 && (
+              <Pagination pagination={pagination} basePath="/blog" />
             )}
           </div>
           
           <!-- Sidebar -->
           <div class="space-y-8">
+            <!-- Categories Widget -->
+            <CategoryList categories={categories} />
+            
+            <!-- Tags Widget -->
+            <TagCloud tags={tags} />
+            
             <!-- CTA Widget -->
             <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6">
               <div class="mb-4">
@@ -204,131 +111,3 @@ if (search) {
   
   <Footer />
 </Layout>
-
-<script>
-  // Handle filter changes and reload posts
-  window.addEventListener('blogFiltersChanged', async (event) => {
-    const filters = event.detail;
-    const container = document.getElementById('blog-posts-container');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const endIndicator = document.getElementById('end-indicator');
-    
-    if (!container) return;
-    
-    // Show loading
-    loadingIndicator?.classList.remove('hidden');
-    endIndicator?.classList.add('hidden');
-    
-    try {
-      // Reload the page with new filters instead of using API
-      const params = new URLSearchParams();
-      if (filters.search) params.set('search', filters.search);
-      if (filters.category) params.set('category', filters.category);
-      if (filters.tag) params.set('tag', filters.tag);
-      if (filters.sort !== 'newest') params.set('sort', filters.sort);
-      
-      const newURL = `/blog${params.toString() ? '?' + params.toString() : ''}`;
-      
-      // Force page reload to get server-side filtered results
-      window.location.href = newURL;
-      return;
-      
-    } catch (error) {
-      console.error('Error loading filtered posts:', error);
-      // Fallback: reload the page
-      window.location.reload();
-    } finally {
-      loadingIndicator?.classList.add('hidden');
-    }
-  });
-  
-  // Helper function to create post elements (same as in InfiniteScroll)
-  function createPostElement(post) {
-    const article = document.createElement('article');
-    article.className = 'bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col';
-    
-    const imageUrl = post.coverImage || 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
-    const excerpt = post.description || truncateText(post.body, 160);
-    const readingTime = getReadingTime(post.body);
-    const formattedDate = formatDate(post.publishedDate);
-    
-    article.innerHTML = `
-      <a href="/blog/${post.slug}" class="block w-full aspect-video overflow-hidden flex-shrink-0" aria-hidden="true" tabindex="-1">
-        <img src="${imageUrl}" alt="${post.imageAlt || post.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-      </a>
-      
-      <div class="p-6 flex flex-col flex-1">
-        ${post.categories?.length > 0 ? `
-          <div class="mb-3 flex-shrink-0">
-            <a href="/blog/category/${slugify(post.categories[0])}" class="inline-block text-xs font-medium bg-primary-100 text-primary-800 px-2 py-1 rounded">
-              ${post.categories[0]}
-            </a>
-          </div>
-        ` : ''}
-        
-        <h2 class="font-heading font-medium text-xl mb-2 text-gray-900 flex-shrink-0">
-          <a href="/blog/${post.slug}" class="hover:text-primary-600 transition-colors block line-clamp-2">
-            ${post.title}
-          </a>
-        </h2>
-        
-        <p class="text-gray-600 mb-4 flex-1 line-clamp-3">
-          ${excerpt}
-        </p>
-        
-        <div class="flex items-center justify-between flex-shrink-0">
-          <div class="text-sm text-gray-500 flex-1 min-w-0">
-            <time datetime="${post.publishedDate}">${formattedDate}</time>
-            <span class="mx-2">•</span>
-            <span>${readingTime} min Lesezeit</span>
-          </div>
-          
-          <a href="/blog/${post.slug}" class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors flex-shrink-0 ml-4">
-            Weiterlesen
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-        </div>
-      </div>
-    `;
-    
-    return article;
-  }
-  
-  // Helper functions
-  function truncateText(text, maxLength) {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + '...';
-  }
-  
-  function getReadingTime(text, wordsPerMinute = 200) {
-    const words = text.trim().split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
-  }
-  
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('de-DE', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-  
-  function slugify(text) {
-    return text
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/ä/g, 'ae')
-      .replace(/ö/g, 'oe')
-      .replace(/ü/g, 'ue')
-      .replace(/ß/g, 'ss')
-      .replace(/\s+/g, '-')
-      .replace(/[^\w\-]+/g, '')
-      .replace(/\-\-+/g, '-')
-      .replace(/^-+/, '')
-      .replace(/-+$/, '');
-  }
-</script>
