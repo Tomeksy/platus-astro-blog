@@ -35,7 +35,7 @@ const formattedDate = formatDate(publishedDate, 'PPP');
 const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 ---
 
-<article class={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${featured ? 'md:flex md:h-auto' : 'h-full flex flex-col'}`}>
+<article class={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col ${featured ? 'md:flex-row md:h-auto' : ''}`}>
   <a 
     href={`/blog/${slug}`} 
     class={`block w-full overflow-hidden ${featured ? 'md:w-2/5 md:h-auto' : 'aspect-video flex-shrink-0'}`}
@@ -49,7 +49,7 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
     />
   </a>
   
-  <div class={`p-6 ${featured ? 'md:w-3/5' : 'flex-1 flex flex-col'}`}>
+  <div class={`p-6 flex flex-col ${featured ? 'md:w-3/5' : 'flex-1'}`}>
     {categories?.length > 0 && (
       <div class="mb-3">
         <a 
@@ -64,13 +64,13 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
     <h2 class={`font-heading font-medium ${featured ? 'text-2xl' : 'text-xl'} mb-2 text-gray-900`}>
       <a 
         href={`/blog/${slug}`} 
-        class="hover:text-primary-600 transition-colors line-clamp-2"
+        class={`hover:text-primary-600 transition-colors block ${featured ? 'line-clamp-3' : 'line-clamp-2'}`}
       >
         {title}
       </a>
     </h2>
     
-    <p class={`text-gray-600 mb-4 ${featured ? 'line-clamp-3' : 'flex-1 line-clamp-3'}`}>
+    <p class={`text-gray-600 mb-4 flex-1 ${featured ? 'line-clamp-4' : 'line-clamp-3'}`}>
       {excerpt}
     </p>
     
@@ -83,7 +83,7 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
       
       <a 
         href={`/blog/${slug}`} 
-        class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors"
+        class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors flex-shrink-0"
       >
         Weiterlesen
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
