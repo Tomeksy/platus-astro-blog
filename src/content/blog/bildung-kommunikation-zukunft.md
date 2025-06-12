@@ -1,12 +1,12 @@
 ---
 title: Die Zukunft der Bildung mit unterstützter Kommunikation
 description: Wie moderne Technologien und neue pädagogische Ansätze die Bildungschancen für Kinder mit Kommunikationsbeeinträchtigungen revolutionieren.
-publishedDate: 2024-06-18
-author: Platus Team
+publishedDate: 2025-01-20
+author: Das Hilfsmittel-Berater Team
 categories: ['Bildung']
 featured: false
 coverImage: https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
-imageAlt: Moderne Technologie im inklusiven Klassenzimmer
+imageAlt: Kinder lernen gemeinsam mit Kommunikationshilfen
 ---
 
 # Die Zukunft der Bildung mit unterstützter Kommunikation
