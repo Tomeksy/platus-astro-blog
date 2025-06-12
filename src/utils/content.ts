@@ -97,14 +97,14 @@ export async function getPaginatedBlogPosts(
   // Filter by category if specified
   if (category) {
     posts = posts.filter(post => 
-      post.data.categories.some(cat => cat.toLowerCase().replace(/\s+/g, '-') === category)
+      post.data.categories.some(cat => slugify(cat) === category)
     );
   }
   
   // Filter by tag if specified
   if (tag) {
     posts = posts.filter(post => 
-      post.data.tags.some(t => t.toLowerCase().replace(/\s+/g, '-') === tag)
+      post.data.tags.some(t => slugify(t) === tag)
     );
   }
   
