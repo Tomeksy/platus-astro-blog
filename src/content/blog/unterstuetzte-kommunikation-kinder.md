@@ -6,7 +6,7 @@ author: Das Hilfmittel-Berater Team
 categories: ['Grundlagen', 'Hilfsmittel', 'Kommunikationstechnik']
 tags: ['unterstützte Kommunikation Kinder', 'AAC Geräte', 'Kommunikationshilfen', 'AAC Grundlagen']
 featured: true
-coverImage: https://airtable.com/appuTHziWxflITw3j/tbll4r6uoNALWAcEV/recC8EIlMPrmzhiP6/fldeR12BPQ3SF5YrG/attpwHg4qeS3dceEn
+coverImage: https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
 imageAlt: Kind nutzt AAC-Gerät zur Kommunikation
 ---
 
