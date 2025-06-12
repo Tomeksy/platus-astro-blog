@@ -96,9 +96,13 @@ export async function getPaginatedBlogPosts(
   
   // Filter by category if specified
   if (category) {
+    console.log('Filtering by category:', category);
+    console.log('Available posts before filtering:', posts.length);
     posts = posts.filter(post => 
       post.data.categories.some(cat => slugify(cat) === category)
     );
+    console.log('Posts after category filtering:', posts.length);
+    console.log('Sample post categories:', posts.length > 0 ? posts[0].data.categories : 'No posts');
   }
   
   // Filter by tag if specified

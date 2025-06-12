@@ -17,6 +17,15 @@ const tag = url.searchParams.get('tag') || undefined;
 const search = url.searchParams.get('search') || undefined;
 const sort = url.searchParams.get('sort') || 'newest';
 
+// Debug logging
+console.log('URL params:', {
+  category,
+  tag,
+  search,
+  sort,
+  fullURL: url.toString()
+});
+
 // Get posts with pagination
 const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 12, category, tag, search, sort);
 
