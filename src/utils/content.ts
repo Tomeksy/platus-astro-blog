@@ -145,7 +145,6 @@ export async function getAllTags(): Promise<TagInfo[]> {
 export async function getRelatedPosts(
   currentSlug: string,
   categories: string[],
-  tags: string[],
   limit: number = 3
 ): Promise<BlogPost[]> {
   const posts = await getAllBlogPosts();
@@ -155,19 +154,17 @@ export async function getRelatedPosts(
     .map(post => {
       let score = 0;
       
-      // Score for matching categories
+      // Score for matching categories (increased weight since tags are removed)
       post.data.categories.forEach(category => {
         if (categories.includes(category)) {
-          score += 3;
+          score += 5; // Increased from 3 to 5
         }
       });
       
-      // Score for matching tags
-      post.data.tags.forEach(tag => {
-        if (tags.includes(tag)) {
-          score += 1;
-        }
-      });
+      // Additional scoring for same primary category
+      if (categories.length > 0 && post.data.categories.includes(categories[0])) {
+        score += 2; // Extra points for same primary category
+      }
       
       return { post, score };
     })
