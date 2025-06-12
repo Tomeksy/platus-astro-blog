@@ -12,30 +12,30 @@ import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../../ut
 import { slugify } from '../../../utils/helpers';
 
 export async function getStaticPaths() {
-  const categories = await getAllCategories();
+  const tags = await getAllTags();
   
-  return categories.map((category) => ({
-    params: { category: category.slug },
-    props: { categoryInfo: category }
+  return tags.map((tag) => ({
+    params: { tag: tag.slug },
+    props: { tagInfo: tag }
   }));
 }
 
 // Get URL parameters
-const { category } = Astro.params;
-const { categoryInfo } = Astro.props;
-const { page } = Astro.url.searchParams || {};
-const currentPage = page ? parseInt(page.toString()) : 1;
+const { tag } = Astro.params;
+const { tagInfo } = Astro.props;
+const page = Astro.url.searchParams.get('page');
+const currentPage = page ? parseInt(page) : 1;
 
-// Get posts with pagination for this category - use the original category name, not the slug
-const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, categoryInfo.name);
+// Get posts with pagination for this tag
+const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, undefined, tagInfo.name);
 
-// Get all categories and tags for sidebar
-const allCategories = await getAllCategories();
-const tags = await getAllTags();
+// Get categories for sidebar
+const categories = await getAllCategories();
+const allTags = await getAllTags();
 
 // Meta information
-const title = `${categoryInfo.name} | Hilfsmittel-Berater Blog`;
-const description = `Entdecke informative Artikel über ${categoryInfo.name} für Menschen mit Kommunikationsbeeinträchtigungen und deren Betreuer.`;
+const title = `${tagInfo.name} | Hilfsmittel-Berater Blog`;
+const description = `Entdecke informative Artikel zum Thema ${tagInfo.name} für Menschen mit Kommunikationsbeeinträchtigungen und deren Betreuer.`;
 ---
 
 <Layout>
@@ -47,7 +47,7 @@ const description = `Entdecke informative Artikel über ${categoryInfo.name} fü
   <Header />
   
   <main class="pt-24 pb-16">
-    <!-- Category Header -->
+    <!-- Tag Header -->
     <section class="bg-gradient-to-r from-primary-500 to-secondary-600 text-white py-12 md:py-16">
       <div class="container mx-auto px-4">
         <div class="max-w-3xl">
@@ -60,10 +60,10 @@ const description = `Entdecke informative Artikel über ${categoryInfo.name} fü
             </a>
           </div>
           <h1 class="text-3xl md:text-4xl font-heading font-medium mb-4">
-            {categoryInfo.name}
+            Tag: {tagInfo.name}
           </h1>
           <p class="text-lg md:text-xl text-white/90 leading-relaxed">
-            {categoryInfo.count} {categoryInfo.count === 1 ? 'Artikel' : 'Artikel'} in dieser Kategorie
+            {tagInfo.count} {tagInfo.count === 1 ? 'Artikel' : 'Artikel'} mit diesem Tag
           </p>
         </div>
       </div>
@@ -85,7 +85,7 @@ const description = `Entdecke informative Artikel über ${categoryInfo.name} fü
               <div class="bg-white rounded-xl shadow-md p-8 text-center">
                 <h2 class="text-xl font-medium mb-4">Keine Beiträge gefunden</h2>
                 <p class="text-gray-600 mb-6">
-                  Zurzeit sind keine Beiträge in dieser Kategorie verfügbar. Bitte versuche es später noch einmal oder wähle eine andere Kategorie.
+                  Zurzeit sind keine Beiträge mit diesem Tag verfügbar. Bitte versuche es später noch einmal oder wähle einen anderen Tag.
                 </p>
                 <a href="/blog" class="text-primary-600 hover:text-primary-800 font-medium">
                   Zurück zur Blogübersicht
@@ -98,7 +98,7 @@ const description = `Entdecke informative Artikel über ${categoryInfo.name} fü
               <Pagination 
                 pagination={pagination} 
                 basePath="/blog" 
-                category={category} 
+                tag={tag} 
               />
             )}
           </div>
@@ -106,10 +106,10 @@ const description = `Entdecke informative Artikel über ${categoryInfo.name} fü
           <!-- Sidebar -->
           <div class="space-y-8">
             <!-- Categories Widget -->
-            <CategoryList categories={allCategories} currentCategory={category} />
+            <CategoryList categories={categories} />
             
             <!-- Tags Widget -->
-            <TagCloud tags={tags} />
+            <TagCloud tags={allTags} currentTag={tag} />
             
             <!-- CTA Widget -->
             <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6">
