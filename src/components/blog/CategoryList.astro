@@ -20,13 +20,13 @@ const sortedCategories = [...categories].sort((a, b) => b.count - a.count);
       <li>
         <a 
           href={`/blog/category/${category.slug}`}
-          class={`flex items-center justify-between py-1 px-2 rounded hover:bg-gray-50 transition-colors ${
+          class={`flex items-center justify-between py-2 px-3 rounded hover:bg-gray-50 transition-colors text-sm ${
             currentCategory === category.slug 
               ? 'bg-primary-50 text-primary-700 font-medium'
               : 'text-gray-700'
           }`}
         >
-          <span>{category.name}</span>
+          <span class="truncate pr-2">{category.name}</span>
           <span class="bg-gray-100 text-gray-600 px-2 py-0.5 text-xs rounded-full">
             {category.count}
           </span>

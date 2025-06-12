@@ -57,12 +57,12 @@ const topCategories = categories
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        <div class="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left">
+        <div class="absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left">
           <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical">
             {topCategories.map((category) => (
               <a
                 href={`/blog/category/${slugify(category.name)}`}
-                class={`block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 ${
+                class={`block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 whitespace-nowrap ${
                   currentPath === `/blog/category/${slugify(category.name)}` ? 'bg-primary-50 text-primary-700' : ''
                 }`}
                 role="menuitem"
@@ -72,7 +72,7 @@ const topCategories = categories
             ))}
             <a
               href="/blog/categories"
-              class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 border-t border-gray-100"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 border-t border-gray-100 whitespace-nowrap"
               role="menuitem"
             >
               Alle Kategorien

@@ -34,6 +34,8 @@
 /* Custom prose for markdown content */
 .prose {
   @apply max-w-none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
@@ -58,6 +60,7 @@
 
 .prose a {
   @apply text-primary-600 hover:text-primary-800 transition-colors font-medium;
+  word-break: break-word;
 }
 
 .prose ul, .prose ol {
@@ -74,6 +77,7 @@
 
 .prose code {
   @apply bg-gray-100 px-1.5 py-0.5 rounded text-gray-800 text-sm;
+  word-break: break-word;
 }
 
 .prose pre {
@@ -82,10 +86,15 @@
 
 .prose img {
   @apply rounded-lg shadow-md;
+  max-width: 100%;
+  height: auto;
 }
 
 .prose table {
   @apply w-full border-collapse my-6;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
 }
 
 .prose thead {
@@ -98,6 +107,34 @@
 
 .prose td {
   @apply border border-gray-200 px-4 py-2;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .prose {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .prose h1 {
+    @apply text-2xl mb-4;
+  }
+  
+  .prose h2 {
+    @apply text-xl mt-8 mb-4;
+  }
+  
+  .prose h3 {
+    @apply text-lg mt-6 mb-3;
+  }
+  
+  .prose p {
+    @apply mb-4;
+  }
+  
+  .prose ul, .prose ol {
+    @apply pl-4;
+  }
 }
 
 /* Animation for page transitions */

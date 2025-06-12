@@ -52,19 +52,19 @@ const description = 'Durchstöbere alle Kategorien im Hilfsmittel-Berater Blog u
     <!-- Categories Content -->
     <section class="py-12">
       <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedCategories.map((category) => (
             <a 
               href={`/blog/category/${category.slug}`}
-              class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+              class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow group"
             >
               <div class="flex items-center justify-between mb-2">
-                <h2 class="text-xl font-medium">{category.name}</h2>
-                <span class="bg-primary-100 text-primary-800 px-2 py-1 text-sm rounded-full">
+                <h2 class="text-lg font-medium truncate pr-2 group-hover:text-primary-600 transition-colors">{category.name}</h2>
+                <span class="bg-primary-100 text-primary-800 px-2 py-1 text-xs rounded-full flex-shrink-0">
                   {category.count} {category.count === 1 ? 'Artikel' : 'Artikel'}
                 </span>
               </div>
-              <p class="text-gray-600">
+              <p class="text-gray-600 text-sm mb-3">
                 Alle Artikel zum Thema {category.name}
               </p>
               <div class="mt-4 text-primary-600 flex items-center text-sm font-medium">
