@@ -26,7 +26,7 @@ const { categoryInfo } = Astro.props;
 const { page } = Astro.url.searchParams || {};
 const currentPage = page ? parseInt(page.toString()) : 1;
 
-// Get posts with pagination for this category
+// Get posts with pagination for this category - use the original category name, not the slug
 const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, categoryInfo.name);
 
 // Get all categories and tags for sidebar
