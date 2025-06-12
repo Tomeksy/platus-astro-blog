@@ -6,9 +6,8 @@ import Footer from '../../../components/common/Footer.astro';
 import BlogCard from '../../../components/blog/BlogCard.astro';
 import Pagination from '../../../components/blog/Pagination.astro';
 import CategoryList from '../../../components/blog/CategoryList.astro';
-import TagCloud from '../../../components/blog/TagCloud.astro';
 import ChatbotCTA from '../../../components/common/ChatbotCTA.astro';
-import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../../utils/content';
+import { getPaginatedBlogPosts, getAllCategories } from '../../../utils/content';
 import { slugify } from '../../../utils/helpers';
 
 export async function getStaticPaths() {
@@ -31,7 +30,6 @@ const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, catego
 
 // Get all categories and tags for sidebar
 const allCategories = await getAllCategories();
-const tags = await getAllTags();
 
 // Meta information
 const title = `${categoryInfo.name} | Hilfsmittel-Berater Blog`;
@@ -107,9 +105,6 @@ const description = `Entdecke informative Artikel über ${categoryInfo.name} fü
           <div class="space-y-8">
             <!-- Categories Widget -->
             <CategoryList categories={allCategories} currentCategory={category} />
-            
-            <!-- Tags Widget -->
-            <TagCloud tags={tags} />
             
             <!-- CTA Widget -->
             <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6">

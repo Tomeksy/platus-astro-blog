@@ -6,9 +6,8 @@ import Footer from '../../components/common/Footer.astro';
 import BlogCard from '../../components/blog/BlogCard.astro';
 import Pagination from '../../components/blog/Pagination.astro';
 import CategoryList from '../../components/blog/CategoryList.astro';
-import TagCloud from '../../components/blog/TagCloud.astro';
 import ChatbotCTA from '../../components/common/ChatbotCTA.astro';
-import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../utils/content';
+import { getPaginatedBlogPosts, getAllCategories } from '../../utils/content';
 
 // Get URL parameters
 const { page } = Astro.params;
@@ -19,7 +18,6 @@ const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9);
 
 // Get categories and tags for sidebar
 const categories = await getAllCategories();
-const tags = await getAllTags();
 
 // Meta information
 const title = 'Blog | Hilfsmittel-Berater';
@@ -83,9 +81,6 @@ const description = 'Entdecke informative Artikel über Kommunikationshilfen, Hi
           <div class="space-y-8">
             <!-- Categories Widget -->
             <CategoryList categories={categories} />
-            
-            <!-- Tags Widget -->
-            <TagCloud tags={tags} />
             
             <!-- CTA Widget -->
             <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6">

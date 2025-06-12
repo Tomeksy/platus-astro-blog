@@ -120,27 +120,6 @@ export async function getAllCategories(): Promise<CategoryInfo[]> {
     .sort((a, b) => b.count - a.count);
 }
 
-// Get all tags with post counts
-export async function getAllTags(): Promise<TagInfo[]> {
-  const posts = await getAllBlogPosts();
-  const tagMap = new Map<string, number>();
-  
-  posts.forEach(post => {
-    post.data.tags.forEach(tag => {
-      const count = tagMap.get(tag) || 0;
-      tagMap.set(tag, count + 1);
-    });
-  });
-  
-  return Array.from(tagMap.entries())
-    .map(([name, count]) => ({
-      name,
-      slug: slugify(name),
-      count
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
 // Get related posts
 export async function getRelatedPosts(
   currentSlug: string,
@@ -158,14 +137,7 @@ export async function getRelatedPosts(
       // Score for matching categories
       post.data.categories.forEach(category => {
         if (categories.includes(category)) {
-          score += 3;
-        }
-      });
-      
-      // Score for matching tags
-      post.data.tags.forEach(tag => {
-        if (tags.includes(tag)) {
-          score += 1;
+          score += 5; // Increased weight since tags are removed
         }
       });
       
