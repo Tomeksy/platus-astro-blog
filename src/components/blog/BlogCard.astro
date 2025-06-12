@@ -53,7 +53,7 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
     {categories?.length > 0 && (
       <div class="mb-3 flex-shrink-0">
         <a 
-          href={`/blog/category/${categories[0].toLowerCase().replace(/\s+/g, '-')}`} 
+          href={`/blog?category=${categories[0].toLowerCase().replace(/\s+/g, '-')}`} 
           class="inline-block text-xs font-medium bg-primary-100 text-primary-800 px-2 py-1 rounded"
         >
           {categories[0]}
