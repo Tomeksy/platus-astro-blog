@@ -11,7 +11,7 @@ interface Props extends MetaData {
 const {
   title,
   description,
-  canonicalUrl = new URL(Astro.url.pathname, import.meta.env.PUBLIC_SITE_URL).toString(),
+  canonicalUrl,
   image,
   imageAlt,
   author,
@@ -22,6 +22,10 @@ const {
   nofollow = false,
 } = Astro.props;
 
+// Safely construct canonical URL
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.site?.toString() || 'https://endearing-lily-dade62.netlify.app';
+const finalCanonicalUrl = canonicalUrl || new URL(Astro.url.pathname, siteUrl).toString();
+
 const ogImage = createOgImageUrl(title, image);
 const siteName = 'Hilfsmittel-Berater.at';
 ---
@@ -29,13 +33,13 @@ const siteName = 'Hilfsmittel-Berater.at';
 <SEO
   title={title}
   description={description}
-  canonical={canonicalUrl}
+  canonical={finalCanonicalUrl}
   openGraph={{
     basic: {
       title: title,
       type: type,
       image: ogImage,
-      url: canonicalUrl,
+      url: finalCanonicalUrl,
     },
     optional: {
       siteName: siteName,
@@ -97,17 +101,17 @@ const siteName = 'Hilfsmittel-Berater.at';
       name: 'Platus',
       logo: {
         '@type': 'ImageObject',
-        url: `${import.meta.env.PUBLIC_SITE_URL}/logo.png`,
+        url: `${siteUrl}/logo.png`,
       },
     },
     description: description,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': canonicalUrl,
+      '@id': finalCanonicalUrl,
     },
   } : {
     name: siteName,
-    url: import.meta.env.PUBLIC_SITE_URL,
+    url: siteUrl,
     description: description,
   }),
 })}></script>
