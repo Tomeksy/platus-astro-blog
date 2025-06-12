@@ -655,7 +655,7 @@ const description = 'Treffen Sie Speakii, Ihren 24/7 Chatbot-Assistenten für Ko
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              {featuredPosts.map((post) => (
+              {featuredPosts.slice(0, 2).map((post) => (
                 <BlogCard post={post} featured={true} />
               ))}
             </div>
