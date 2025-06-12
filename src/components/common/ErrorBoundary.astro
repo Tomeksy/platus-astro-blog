@@ -1,0 +1,66 @@
+---
+interface Props {
+  fallback?: string;
+  className?: string;
+}
+
+const { 
+  fallback = "Etwas ist schiefgelaufen. Bitte versuche es später noch einmal.",
+  className = ""
+} = Astro.props;
+---
+
+<div class={`error-boundary ${className}`}>
+  <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-red-800 mb-2">Fehler aufgetreten</h3>
+    <p class="text-red-700 mb-4">{fallback}</p>
+    <button 
+      onclick="window.location.reload()" 
+      class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+    >
+      Seite neu laden
+    </button>
+  </div>
+</div>
+
+<script>
+  // Global error handler for better user experience
+  window.addEventListener('error', (event) => {
+    console.error('Global error caught:', event.error);
+    
+    // Show user-friendly error message
+    const errorBoundaries = document.querySelectorAll('.error-boundary');
+    if (errorBoundaries.length === 0) {
+      // Create a simple error notification if no error boundary exists
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+          </svg>
+          <span>Ein Fehler ist aufgetreten. Bitte lade die Seite neu.</span>
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      // Auto-remove notification after 5 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 5000);
+    }
+  });
+
+  // Handle unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    event.preventDefault(); // Prevent the default browser behavior
+  });
+</script>

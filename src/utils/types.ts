@@ -41,12 +41,6 @@ export interface CategoryInfo {
   count: number;
 }
 
-export interface TagInfo {
-  name: string;
-  slug: string;
-  count: number;
-}
-
 export interface MetaData {
   title: string;
   description: string;

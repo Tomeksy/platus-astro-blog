@@ -6,9 +6,8 @@ import Footer from '../../../components/common/Footer.astro';
 import BlogCard from '../../../components/blog/BlogCard.astro';
 import Pagination from '../../../components/blog/Pagination.astro';
 import CategoryList from '../../../components/blog/CategoryList.astro';
-import TagCloud from '../../../components/blog/TagCloud.astro';
 import ChatbotCTA from '../../../components/common/ChatbotCTA.astro';
-import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../../utils/content';
+import { getPaginatedBlogPosts, getAllCategories } from '../../../utils/content';
 import { slugify } from '../../../utils/helpers';
 
 export async function getStaticPaths() {
@@ -29,9 +28,8 @@ const currentPage = page ? parseInt(page.toString()) : 1;
 // Get posts with pagination for this category - use the original category name, not the slug
 const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, categoryInfo.name);
 
-// Get all categories and tags for sidebar
+// Get all categories for sidebar
 const allCategories = await getAllCategories();
-const tags = await getAllTags();
 
 // Meta information
 const title = `${categoryInfo.name} | Hilfsmittel-Berater Blog`;

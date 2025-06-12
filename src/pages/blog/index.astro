@@ -6,9 +6,8 @@ import Footer from '../../components/common/Footer.astro';
 import BlogCard from '../../components/blog/BlogCard.astro';
 import Pagination from '../../components/blog/Pagination.astro';
 import CategoryList from '../../components/blog/CategoryList.astro';
-import TagCloud from '../../components/blog/TagCloud.astro';
 import ChatbotCTA from '../../components/common/ChatbotCTA.astro';
-import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../utils/content';
+import { getPaginatedBlogPosts, getAllCategories } from '../../utils/content';
 
 // Get URL parameters
 const { page } = Astro.params;
@@ -17,9 +16,8 @@ const currentPage = page ? parseInt(page) : 1;
 // Get posts with pagination
 const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9);
 
-// Get categories and tags for sidebar
+// Get categories for sidebar
 const categories = await getAllCategories();
-const tags = await getAllTags();
 
 // Meta information
 const title = 'Blog | Hilfsmittel-Berater';

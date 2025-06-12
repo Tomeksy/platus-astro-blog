@@ -10,12 +10,6 @@ export interface CategoryInfo {
   count: number;
 }
 
-export interface TagInfo {
-  name: string;
-  slug: string;
-  count: number;
-}
-
 export interface Pagination {
   currentPage: number;
   totalPages: number;
@@ -46,25 +40,14 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefi
 export async function getPaginatedBlogPosts(
   page: number = 1,
   itemsPerPage: number = 10,
-  category?: string,
-  tag?: string
+  category?: string
 ): Promise<BlogPostsResponse> {
   let posts = await getAllBlogPosts();
   
   // Filter by category if specified
   if (category) {
-    console.log('Filtering by category:', category);
-    console.log('Available posts:', posts.map(p => ({ slug: p.slug, categories: p.data.categories })));
     posts = posts.filter(post => 
       post.data.categories.includes(category)
-    );
-    console.log('Filtered posts:', posts.map(p => p.slug));
-  }
-  
-  // Filter by tag if specified
-  if (tag) {
-    posts = posts.filter(post => 
-      post.data.tags.some(t => slugify(t) === tag)
     );
   }
   
@@ -118,27 +101,6 @@ export async function getAllCategories(): Promise<CategoryInfo[]> {
       count
     }))
     .sort((a, b) => b.count - a.count);
-}
-
-// Get all tags with post counts
-export async function getAllTags(): Promise<TagInfo[]> {
-  const posts = await getAllBlogPosts();
-  const tagMap = new Map<string, number>();
-  
-  posts.forEach(post => {
-    post.data.tags.forEach(tag => {
-      const count = tagMap.get(tag) || 0;
-      tagMap.set(tag, count + 1);
-    });
-  });
-  
-  return Array.from(tagMap.entries())
-    .map(([name, count]) => ({
-      name,
-      slug: slugify(name),
-      count
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 // Get related posts
