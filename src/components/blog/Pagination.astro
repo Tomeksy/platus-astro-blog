@@ -6,14 +6,12 @@ interface Props {
   pagination: Pagination;
   basePath?: string;
   category?: string;
-  tag?: string;
 }
 
 const { 
   pagination, 
   basePath = '/blog', 
-  category, 
-  tag 
+  category
 } = Astro.props;
 
 const {
@@ -80,7 +78,7 @@ if (totalPages <= MAX_VISIBLE_PAGES) {
     <li>
       {hasPrevPage ? (
         <a
-          href={getPaginationPath(basePath, currentPage - 1, category, tag)}
+          href={getPaginationPath(basePath, currentPage - 1, category)}
           class="flex items-center px-3 py-2 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
           aria-label="Vorherige Seite"
         >
@@ -107,7 +105,7 @@ if (totalPages <= MAX_VISIBLE_PAGES) {
       <li>
         {typeof page === 'number' ? (
           <a
-            href={getPaginationPath(basePath, page, category, tag)}
+            href={getPaginationPath(basePath, page, category)}
             class={`px-4 py-2 rounded-md text-sm font-medium ${
               currentPage === page 
                 ? 'bg-primary-600 text-white' 
@@ -128,7 +126,7 @@ if (totalPages <= MAX_VISIBLE_PAGES) {
     <li>
       {hasNextPage ? (
         <a
-          href={getPaginationPath(basePath, currentPage + 1, category, tag)}
+          href={getPaginationPath(basePath, currentPage + 1, category)}
           class="flex items-center px-3 py-2 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
           aria-label="Nächste Seite"
         >
