@@ -58,12 +58,15 @@ export function createOgImageUrl(title: string, imageUrl?: string): string {
 export function getPaginationPath(
   basePath: string,
   page: number,
-  category?: string
+  category?: string,
+  tag?: string
 ): string {
   let path = basePath;
   
   if (category) {
     path = `/blog/category/${category}`;
+  } else if (tag) {
+    path = `/blog/tag/${tag}`;
   }
   
   if (page === 1) return path;

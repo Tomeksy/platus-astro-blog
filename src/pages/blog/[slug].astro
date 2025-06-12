@@ -15,8 +15,8 @@ export async function getStaticPaths() {
 // Get the post from props
 const { post } = Astro.props;
 
-// Get related posts - now correctly accessing categories from post.data
-const relatedPosts = await getRelatedPosts(post.id, post.data.categories, 3);
+// Get related posts - now correctly accessing categories and tags from post.data
+const relatedPosts = await getRelatedPosts(post.id, post.data.categories, post.data.tags, 3);
 ---
 
 <BlogPostLayout post={post} relatedPosts={relatedPosts} />

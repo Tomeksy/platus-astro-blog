@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import ErrorBoundary from '../components/common/ErrorBoundary.astro';
 
 interface Props {
   title?: string;
@@ -24,7 +23,6 @@ const { title } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
   </head>
   <body class="bg-gray-50 min-h-screen">
-    <ErrorBoundary className="fixed top-4 right-4 z-50 hidden" />
     <slot />
   </body>
 </html>
