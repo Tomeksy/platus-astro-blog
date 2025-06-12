@@ -64,13 +64,13 @@ const imageUrl = coverImage || 'https://images.pexels.com/photos/3755755/pexels-
     <h2 class={`font-heading font-medium ${featured ? 'text-2xl' : 'text-xl'} mb-2 text-gray-900`}>
       <a 
         href={`/blog/${slug}`} 
-        class="hover:text-primary-600 transition-colors"
+        class="hover:text-primary-600 transition-colors line-clamp-2"
       >
         {title}
       </a>
     </h2>
     
-    <p class={`text-gray-600 mb-4 ${featured ? '' : 'flex-1'}`}>
+    <p class={`text-gray-600 mb-4 ${featured ? 'line-clamp-3' : 'flex-1 line-clamp-3'}`}>
       {excerpt}
     </p>
     
