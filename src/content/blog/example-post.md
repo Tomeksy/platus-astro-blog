@@ -3,7 +3,7 @@ title: Kommunikationshilfen im Alltag
 description: Ein Überblick über moderne Hilfsmittel zur Unterstützung der Kommunikation im täglichen Leben.
 publishedDate: 2024-01-15
 author: Platus Team
-categories: ['Grundlagen', 'Hilfsmittel']
+categories: ['Grundlagen']
 tags: ['Kommunikation', 'Alltag', 'Technologie']
 featured: true
 coverImage: https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg

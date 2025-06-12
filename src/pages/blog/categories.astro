@@ -10,8 +10,10 @@ import { slugify } from '../../utils/helpers';
 // Get all categories
 const categories = await getAllCategories();
 
-// Sort categories by post count (descending)
-const sortedCategories = [...categories].sort((a, b) => b.count - a.count);
+// Filter and sort categories - only show the 4 main categories  
+const allowedCategories = ['Grundlagen', 'Hilfsmittel', 'Finanzierung', 'Bildung'];
+const filteredCategories = categories.filter(cat => allowedCategories.includes(cat.name));
+const sortedCategories = [...filteredCategories].sort((a, b) => b.count - a.count);
 
 // Meta information
 const title = 'Alle Kategorien | Hilfsmittel-Berater Blog';

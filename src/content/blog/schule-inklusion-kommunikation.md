@@ -3,7 +3,7 @@ title: Inklusion in der Schule - Kommunikationshilfen im Klassenzimmer
 description: Wie Kommunikationshilfen den Schulalltag für Kinder mit Sprachbeeinträchtigungen verbessern und echte Inklusion ermöglichen.
 publishedDate: 2024-09-22
 author: Das Hilfsmittel-Berater Team
-categories: ['Bildung', 'Inklusion']
+categories: ['Bildung']
 tags: ['Schule', 'Inklusion', 'Kinder', 'Bildung', 'Kommunikation']
 featured: false
 coverImage: https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2

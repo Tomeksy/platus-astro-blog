@@ -3,7 +3,7 @@ title: Unterstützte Kommunikation für Kinder ohne Lautsprache
 description: Für viele Kinder ohne Lautsprache ist unterstützte Kommunikation der Schlüssel zur Teilhabe. Dieser Artikel erklärt, welche Kommunikationshilfen und AAC-Geräte es gibt und wie sie den Alltag verändern können.
 publishedDate: 2025-05-21
 author: Das Hilfmittel-Berater Team
-categories: ['Grundlagen', 'Hilfsmittel', 'Kommunikationstechnik']
+categories: ['Grundlagen']
 tags: ['unterstützte Kommunikation Kinder', 'AAC Geräte', 'Kommunikationshilfen', 'AAC Grundlagen']
 featured: true
 coverImage: https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2

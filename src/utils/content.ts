@@ -93,12 +93,18 @@ export async function getFeaturedPosts(limit: number = 3): Promise<BlogPost[]> {
 // Get all categories with post counts
 export async function getAllCategories(): Promise<CategoryInfo[]> {
   const posts = await getAllBlogPosts();
+  
+  // Only allow the 4 main categories
+  const allowedCategories = ['Grundlagen', 'Hilfsmittel', 'Finanzierung', 'Bildung'];
+  
   const categoryMap = new Map<string, number>();
   
   posts.forEach(post => {
     post.data.categories.forEach(category => {
-      const count = categoryMap.get(category) || 0;
-      categoryMap.set(category, count + 1);
+      if (allowedCategories.includes(category)) {
+        const count = categoryMap.get(category) || 0;
+        categoryMap.set(category, count + 1);
+      }
     });
   });
   

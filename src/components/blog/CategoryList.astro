@@ -8,8 +8,10 @@ interface Props {
 
 const { categories, currentCategory } = Astro.props;
 
-// Sort categories by post count (descending)
-const sortedCategories = [...categories].sort((a, b) => b.count - a.count);
+// Filter and sort categories - only show the 4 main categories
+const allowedCategories = ['Grundlagen', 'Hilfsmittel', 'Finanzierung', 'Bildung'];
+const filteredCategories = categories.filter(cat => allowedCategories.includes(cat.name));
+const sortedCategories = [...filteredCategories].sort((a, b) => b.count - a.count);
 ---
 
 <div class="bg-white rounded-xl shadow-md p-6">

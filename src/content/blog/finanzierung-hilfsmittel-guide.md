@@ -3,7 +3,7 @@ title: Finanzierung von Kommunikationshilfen - Der komplette Guide
 description: Alles was du über die Finanzierung von Kommunikationshilfen wissen musst. Von Krankenkassen bis zu Förderungen - wir erklären den Weg zum kostenlosen Hilfsmittel.
 publishedDate: 2024-11-28
 author: Das Hilfsmittel-Berater Team
-categories: ['Finanzierung', 'Grundlagen']
+categories: ['Finanzierung']
 tags: ['Finanzierung', 'Krankenkasse', 'Antrag', 'Kostenübernahme']
 featured: false
 coverImage: https://images.pexels.com/photos/6863183/pexels-photo-6863183.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2

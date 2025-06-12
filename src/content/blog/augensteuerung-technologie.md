@@ -3,7 +3,7 @@ title: Augensteuerung - Die Zukunft der Kommunikation
 description: Moderne Augensteuerungssysteme ermöglichen Menschen mit schweren körperlichen Einschränkungen eine natürliche Kommunikation durch Blickbewegungen.
 publishedDate: 2024-12-15
 author: Platus Team
-categories: ['Technologie', 'Hilfsmittel']
+categories: ['Hilfsmittel']
 tags: ['Augensteuerung', 'Technologie', 'ALS', 'Innovation']
 featured: false
 coverImage: https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2

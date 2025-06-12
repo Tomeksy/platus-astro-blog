@@ -3,7 +3,7 @@ title: Die besten Tablet-Apps für unterstützte Kommunikation
 description: Eine Übersicht der führenden AAC-Apps für Tablets. Von kostenlosen Einstiegslösungen bis zu professionellen Kommunikationsprogrammen.
 publishedDate: 2024-10-10
 author: Platus Team
-categories: ['Technologie', 'Apps']
+categories: ['Hilfsmittel']
 tags: ['Tablet', 'Apps', 'AAC Geräte', 'Software']
 featured: false
 coverImage: https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2

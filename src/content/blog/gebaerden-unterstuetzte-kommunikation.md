@@ -3,7 +3,7 @@ title: Gebärden in der unterstützten Kommunikation
 description: Wie Gebärden als natürliche Form der Kommunikation Menschen ohne Lautsprache helfen und warum sie oft der erste Schritt zur erfolgreichen UK sind.
 publishedDate: 2024-08-14
 author: Platus Team
-categories: ['Grundlagen', 'Methoden']
+categories: ['Grundlagen']
 tags: ['Gebärden', 'unterstützte Kommunikation Kinder', 'Methoden', 'Körpersprache']
 featured: false
 coverImage: https://images.pexels.com/photos/7176026/pexels-photo-7176026.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
