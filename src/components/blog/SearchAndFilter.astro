@@ -349,13 +349,13 @@ const sortedTags = [...tags].sort((a, b) => a.name.localeCompare(b.name));
       if (this.currentFilters.tag) params.set('tag', this.currentFilters.tag);
       if (this.currentFilters.sort !== 'newest') params.set('sort', this.currentFilters.sort);
       
-      // Use proper navigation instead of pushState to avoid navigation errors
+      // Update URL without navigation using history API
       const newURL = `/blog${params.toString() ? '?' + params.toString() : ''}`;
+      const currentURL = window.location.pathname + window.location.search;
       
-      // Only update URL if it's different from current
-      if (window.location.pathname + window.location.search !== newURL) {
-        window.location.href = newURL;
-        return; // Exit early since we're navigating
+      if (currentURL !== newURL) {
+        // Use replaceState instead of pushState to avoid navigation issues
+        window.history.replaceState({}, '', newURL);
       }
       
       // Update active filters display
