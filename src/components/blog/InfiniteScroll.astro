@@ -1,0 +1,230 @@
+---
+interface Props {
+  initialPosts: any[];
+  totalPages: number;
+  currentPage: number;
+  category?: string;
+  tag?: string;
+}
+
+const { initialPosts, totalPages, currentPage, category, tag } = Astro.props;
+---
+
+<div id="blog-posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-start">
+  <!-- Initial posts will be rendered here by the parent component -->
+</div>
+
+<!-- Loading indicator -->
+<div id="loading-indicator" class="hidden text-center py-8">
+  <div class="inline-flex items-center px-4 py-2 bg-primary-100 text-primary-700 rounded-lg">
+    <svg class="animate-spin -ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    Weitere Artikel werden geladen...
+  </div>
+</div>
+
+<!-- End of posts indicator -->
+<div id="end-indicator" class="hidden text-center py-8">
+  <div class="bg-gray-100 text-gray-600 px-4 py-3 rounded-lg">
+    <p class="font-medium mb-2">Das waren alle Artikel!</p>
+    <p class="text-sm">Du hast alle verfügbaren Artikel in dieser Kategorie gesehen.</p>
+  </div>
+</div>
+
+<script>
+  class InfiniteScroll {
+    constructor() {
+      this.currentPage = parseInt(document.querySelector('[data-current-page]')?.getAttribute('data-current-page') || '1');
+      this.totalPages = parseInt(document.querySelector('[data-total-pages]')?.getAttribute('data-total-pages') || '1');
+      this.category = document.querySelector('[data-category]')?.getAttribute('data-category') || '';
+      this.tag = document.querySelector('[data-tag]')?.getAttribute('data-tag') || '';
+      this.loading = false;
+      this.container = document.getElementById('blog-posts-container');
+      this.loadingIndicator = document.getElementById('loading-indicator');
+      this.endIndicator = document.getElementById('end-indicator');
+      
+      this.init();
+    }
+    
+    init() {
+      // Set up intersection observer for infinite scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !this.loading && this.currentPage < this.totalPages) {
+            this.loadMorePosts();
+          }
+        });
+      }, {
+        rootMargin: '100px'
+      });
+      
+      // Create a sentinel element to observe
+      const sentinel = document.createElement('div');
+      sentinel.id = 'scroll-sentinel';
+      sentinel.style.height = '1px';
+      this.container.parentNode.insertBefore(sentinel, this.loadingIndicator);
+      observer.observe(sentinel);
+      
+      // Show end indicator if we're already at the last page
+      if (this.currentPage >= this.totalPages) {
+        this.showEndIndicator();
+      }
+    }
+    
+    async loadMorePosts() {
+      if (this.loading || this.currentPage >= this.totalPages) return;
+      
+      this.loading = true;
+      this.showLoadingIndicator();
+      
+      try {
+        const nextPage = this.currentPage + 1;
+        let url = `/api/blog-posts?page=${nextPage}`;
+        
+        if (this.category) {
+          url += `&category=${encodeURIComponent(this.category)}`;
+        }
+        
+        if (this.tag) {
+          url += `&tag=${encodeURIComponent(this.tag)}`;
+        }
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.posts && data.posts.length > 0) {
+          this.appendPosts(data.posts);
+          this.currentPage = nextPage;
+          
+          // Update data attributes
+          document.querySelector('[data-current-page]')?.setAttribute('data-current-page', nextPage.toString());
+        }
+        
+        if (nextPage >= this.totalPages) {
+          this.showEndIndicator();
+          document.getElementById('scroll-sentinel')?.remove();
+        }
+        
+      } catch (error) {
+        console.error('Error loading more posts:', error);
+      } finally {
+        this.loading = false;
+        this.hideLoadingIndicator();
+      }
+    }
+    
+    appendPosts(posts) {
+      posts.forEach(post => {
+        const postElement = this.createPostElement(post);
+        this.container.appendChild(postElement);
+      });
+    }
+    
+    createPostElement(post) {
+      const article = document.createElement('article');
+      article.className = 'bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col';
+      
+      const imageUrl = post.coverImage || 'https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+      const excerpt = post.description || this.truncateText(post.body, 160);
+      const readingTime = this.getReadingTime(post.body);
+      const formattedDate = this.formatDate(post.publishedDate);
+      
+      article.innerHTML = `
+        <a href="/blog/${post.slug}" class="block w-full aspect-video overflow-hidden flex-shrink-0" aria-hidden="true" tabindex="-1">
+          <img src="${imageUrl}" alt="${post.imageAlt || post.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+        </a>
+        
+        <div class="p-6 flex flex-col flex-1">
+          ${post.categories?.length > 0 ? `
+            <div class="mb-3 flex-shrink-0">
+              <a href="/blog/category/${this.slugify(post.categories[0])}" class="inline-block text-xs font-medium bg-primary-100 text-primary-800 px-2 py-1 rounded">
+                ${post.categories[0]}
+              </a>
+            </div>
+          ` : ''}
+          
+          <h2 class="font-heading font-medium text-xl mb-2 text-gray-900 flex-shrink-0">
+            <a href="/blog/${post.slug}" class="hover:text-primary-600 transition-colors block line-clamp-2">
+              ${post.title}
+            </a>
+          </h2>
+          
+          <p class="text-gray-600 mb-4 flex-1 line-clamp-3">
+            ${excerpt}
+          </p>
+          
+          <div class="flex items-center justify-between flex-shrink-0">
+            <div class="text-sm text-gray-500 flex-1 min-w-0">
+              <time datetime="${post.publishedDate}">${formattedDate}</time>
+              <span class="mx-2">•</span>
+              <span>${readingTime} min Lesezeit</span>
+            </div>
+            
+            <a href="/blog/${post.slug}" class="text-sm font-medium text-primary-600 hover:text-primary-800 inline-flex items-center transition-colors flex-shrink-0 ml-4">
+              Weiterlesen
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      `;
+      
+      return article;
+    }
+    
+    showLoadingIndicator() {
+      this.loadingIndicator?.classList.remove('hidden');
+    }
+    
+    hideLoadingIndicator() {
+      this.loadingIndicator?.classList.add('hidden');
+    }
+    
+    showEndIndicator() {
+      this.endIndicator?.classList.remove('hidden');
+    }
+    
+    truncateText(text, maxLength) {
+      if (text.length <= maxLength) return text;
+      return text.slice(0, maxLength) + '...';
+    }
+    
+    getReadingTime(text, wordsPerMinute = 200) {
+      const words = text.trim().split(/\s+/).length;
+      return Math.ceil(words / wordsPerMinute);
+    }
+    
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('de-DE', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+    
+    slugify(text) {
+      return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/ä/g, 'ae')
+        .replace(/ö/g, 'oe')
+        .replace(/ü/g, 'ue')
+        .replace(/ß/g, 'ss')
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+    }
+  }
+  
+  // Initialize infinite scroll when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    new InfiniteScroll();
+  });
+</script>

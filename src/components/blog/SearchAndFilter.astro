@@ -1,0 +1,499 @@
+---
+import type { CategoryInfo, TagInfo } from '../../utils/types';
+
+interface Props {
+  categories: CategoryInfo[];
+  tags: TagInfo[];
+  currentCategory?: string;
+  currentTag?: string;
+  searchQuery?: string;
+}
+
+const { categories, tags, currentCategory, currentTag, searchQuery } = Astro.props;
+
+// Sort categories by post count (descending)
+const sortedCategories = [...categories].sort((a, b) => b.count - a.count);
+
+// Sort tags alphabetically
+const sortedTags = [...tags].sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<div class="bg-white rounded-xl shadow-md p-6 mb-8">
+  <h2 class="text-lg font-medium mb-4">Artikel durchsuchen</h2>
+  
+  <!-- Search Bar -->
+  <div class="mb-6">
+    <div class="relative">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Nach Artikeln suchen..."
+        value={searchQuery || ''}
+        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+      />
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <button
+        id="clear-search"
+        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors hidden"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Active Filters -->
+  <div id="active-filters" class="mb-4 hidden">
+    <div class="flex flex-wrap gap-2 items-center">
+      <span class="text-sm font-medium text-gray-700">Aktive Filter:</span>
+      <div id="filter-tags" class="flex flex-wrap gap-2"></div>
+      <button
+        id="clear-all-filters"
+        class="text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
+      >
+        Alle Filter löschen
+      </button>
+    </div>
+  </div>
+  
+  <!-- Quick Category Filters -->
+  <div class="mb-6">
+    <h3 class="text-sm font-medium text-gray-700 mb-3">Kategorien</h3>
+    <div class="flex flex-wrap gap-2">
+      {sortedCategories.slice(0, 6).map((category) => (
+        <button
+          class={`category-filter px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            currentCategory === category.slug 
+              ? 'bg-primary-600 text-white' 
+              : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700'
+          }`}
+          data-category={category.slug}
+          data-category-name={category.name}
+        >
+          {category.name}
+          <span class="ml-1 text-xs opacity-75">({category.count})</span>
+        </button>
+      ))}
+      {categories.length > 6 && (
+        <button
+          id="show-all-categories"
+          class="px-3 py-1.5 rounded-full text-sm font-medium bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          +{categories.length - 6} weitere
+        </button>
+      )}
+    </div>
+  </div>
+  
+  <!-- Popular Tags -->
+  <div class="mb-6">
+    <h3 class="text-sm font-medium text-gray-700 mb-3">Beliebte Tags</h3>
+    <div class="flex flex-wrap gap-2">
+      {sortedTags.slice(0, 8).map((tag) => (
+        <button
+          class={`tag-filter px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+            currentTag === tag.slug 
+              ? 'bg-secondary-600 text-white' 
+              : 'bg-gray-100 text-gray-600 hover:bg-secondary-100 hover:text-secondary-700'
+          }`}
+          data-tag={tag.slug}
+          data-tag-name={tag.name}
+        >
+          {tag.name}
+        </button>
+      ))}
+      {tags.length > 8 && (
+        <button
+          id="show-all-tags"
+          class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors"
+        >
+          +{tags.length - 8} weitere
+        </button>
+      )}
+    </div>
+  </div>
+  
+  <!-- Sort Options -->
+  <div>
+    <h3 class="text-sm font-medium text-gray-700 mb-3">Sortierung</h3>
+    <select
+      id="sort-select"
+      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+    >
+      <option value="newest">Neueste zuerst</option>
+      <option value="oldest">Älteste zuerst</option>
+      <option value="title-asc">Titel A-Z</option>
+      <option value="title-desc">Titel Z-A</option>
+    </select>
+  </div>
+</div>
+
+<!-- All Categories Modal -->
+<div id="categories-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-96 overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium">Alle Kategorien</h3>
+          <button id="close-categories-modal" class="text-gray-400 hover:text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          {sortedCategories.map((category) => (
+            <button
+              class="category-filter text-left px-3 py-2 rounded-lg text-sm hover:bg-primary-50 hover:text-primary-700 transition-colors"
+              data-category={category.slug}
+              data-category-name={category.name}
+            >
+              {category.name}
+              <span class="text-xs text-gray-500 ml-1">({category.count})</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- All Tags Modal -->
+<div id="tags-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-96 overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium">Alle Tags</h3>
+          <button id="close-tags-modal" class="text-gray-400 hover:text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {sortedTags.map((tag) => (
+            <button
+              class="tag-filter px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-secondary-100 hover:text-secondary-700 transition-colors"
+              data-tag={tag.slug}
+              data-tag-name={tag.name}
+            >
+              {tag.name}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  class SearchAndFilter {
+    constructor() {
+      this.searchInput = document.getElementById('search-input');
+      this.clearSearch = document.getElementById('clear-search');
+      this.activeFilters = document.getElementById('active-filters');
+      this.filterTags = document.getElementById('filter-tags');
+      this.clearAllFilters = document.getElementById('clear-all-filters');
+      this.sortSelect = document.getElementById('sort-select');
+      
+      this.currentFilters = {
+        search: '',
+        category: '',
+        categoryName: '',
+        tag: '',
+        tagName: '',
+        sort: 'newest'
+      };
+      
+      this.init();
+    }
+    
+    init() {
+      // Search functionality
+      this.searchInput?.addEventListener('input', this.debounce((e) => {
+        this.currentFilters.search = e.target.value;
+        this.updateFilters();
+        this.toggleClearButton();
+      }, 300));
+      
+      this.clearSearch?.addEventListener('click', () => {
+        this.searchInput.value = '';
+        this.currentFilters.search = '';
+        this.updateFilters();
+        this.toggleClearButton();
+      });
+      
+      // Category filters
+      document.querySelectorAll('.category-filter').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const category = e.target.getAttribute('data-category');
+          const categoryName = e.target.getAttribute('data-category-name');
+          
+          if (this.currentFilters.category === category) {
+            // Deselect if already selected
+            this.currentFilters.category = '';
+            this.currentFilters.categoryName = '';
+          } else {
+            this.currentFilters.category = category;
+            this.currentFilters.categoryName = categoryName;
+          }
+          
+          this.updateFilters();
+          this.updateCategoryButtons();
+        });
+      });
+      
+      // Tag filters
+      document.querySelectorAll('.tag-filter').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const tag = e.target.getAttribute('data-tag');
+          const tagName = e.target.getAttribute('data-tag-name');
+          
+          if (this.currentFilters.tag === tag) {
+            // Deselect if already selected
+            this.currentFilters.tag = '';
+            this.currentFilters.tagName = '';
+          } else {
+            this.currentFilters.tag = tag;
+            this.currentFilters.tagName = tagName;
+          }
+          
+          this.updateFilters();
+          this.updateTagButtons();
+        });
+      });
+      
+      // Sort functionality
+      this.sortSelect?.addEventListener('change', (e) => {
+        this.currentFilters.sort = e.target.value;
+        this.updateFilters();
+      });
+      
+      // Clear all filters
+      this.clearAllFilters?.addEventListener('click', () => {
+        this.clearAllFiltersAction();
+      });
+      
+      // Modal functionality
+      this.setupModals();
+      
+      // Initialize from URL
+      this.initFromURL();
+    }
+    
+    setupModals() {
+      const showAllCategories = document.getElementById('show-all-categories');
+      const categoriesModal = document.getElementById('categories-modal');
+      const closeCategoriesModal = document.getElementById('close-categories-modal');
+      
+      const showAllTags = document.getElementById('show-all-tags');
+      const tagsModal = document.getElementById('tags-modal');
+      const closeTagsModal = document.getElementById('close-tags-modal');
+      
+      showAllCategories?.addEventListener('click', () => {
+        categoriesModal?.classList.remove('hidden');
+      });
+      
+      closeCategoriesModal?.addEventListener('click', () => {
+        categoriesModal?.classList.add('hidden');
+      });
+      
+      showAllTags?.addEventListener('click', () => {
+        tagsModal?.classList.remove('hidden');
+      });
+      
+      closeTagsModal?.addEventListener('click', () => {
+        tagsModal?.classList.add('hidden');
+      });
+      
+      // Close modals on backdrop click
+      [categoriesModal, tagsModal].forEach(modal => {
+        modal?.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            modal.classList.add('hidden');
+          }
+        });
+      });
+    }
+    
+    initFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      this.currentFilters.search = urlParams.get('search') || '';
+      this.currentFilters.category = urlParams.get('category') || '';
+      this.currentFilters.tag = urlParams.get('tag') || '';
+      this.currentFilters.sort = urlParams.get('sort') || 'newest';
+      
+      // Update UI
+      if (this.searchInput) this.searchInput.value = this.currentFilters.search;
+      if (this.sortSelect) this.sortSelect.value = this.currentFilters.sort;
+      
+      this.updateActiveFilters();
+      this.updateCategoryButtons();
+      this.updateTagButtons();
+      this.toggleClearButton();
+    }
+    
+    updateFilters() {
+      // Update URL
+      const params = new URLSearchParams();
+      
+      if (this.currentFilters.search) params.set('search', this.currentFilters.search);
+      if (this.currentFilters.category) params.set('category', this.currentFilters.category);
+      if (this.currentFilters.tag) params.set('tag', this.currentFilters.tag);
+      if (this.currentFilters.sort !== 'newest') params.set('sort', this.currentFilters.sort);
+      
+      const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+      window.history.pushState({}, '', newURL);
+      
+      // Update active filters display
+      this.updateActiveFilters();
+      
+      // Trigger blog posts reload
+      this.reloadBlogPosts();
+    }
+    
+    updateActiveFilters() {
+      const hasFilters = this.currentFilters.search || this.currentFilters.category || this.currentFilters.tag;
+      
+      if (hasFilters) {
+        this.activeFilters?.classList.remove('hidden');
+        this.filterTags.innerHTML = '';
+        
+        if (this.currentFilters.search) {
+          this.addFilterTag('Suche', this.currentFilters.search, 'search');
+        }
+        
+        if (this.currentFilters.categoryName) {
+          this.addFilterTag('Kategorie', this.currentFilters.categoryName, 'category');
+        }
+        
+        if (this.currentFilters.tagName) {
+          this.addFilterTag('Tag', this.currentFilters.tagName, 'tag');
+        }
+      } else {
+        this.activeFilters?.classList.add('hidden');
+      }
+    }
+    
+    addFilterTag(type, value, filterKey) {
+      const tag = document.createElement('span');
+      tag.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800';
+      tag.innerHTML = `
+        ${type}: ${value}
+        <button class="ml-1 hover:text-primary-600" data-remove="${filterKey}">
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      `;
+      
+      tag.querySelector('button')?.addEventListener('click', () => {
+        this.removeFilter(filterKey);
+      });
+      
+      this.filterTags?.appendChild(tag);
+    }
+    
+    removeFilter(filterKey) {
+      if (filterKey === 'search') {
+        this.currentFilters.search = '';
+        if (this.searchInput) this.searchInput.value = '';
+      } else if (filterKey === 'category') {
+        this.currentFilters.category = '';
+        this.currentFilters.categoryName = '';
+      } else if (filterKey === 'tag') {
+        this.currentFilters.tag = '';
+        this.currentFilters.tagName = '';
+      }
+      
+      this.updateFilters();
+      this.updateCategoryButtons();
+      this.updateTagButtons();
+      this.toggleClearButton();
+    }
+    
+    clearAllFiltersAction() {
+      this.currentFilters = {
+        search: '',
+        category: '',
+        categoryName: '',
+        tag: '',
+        tagName: '',
+        sort: 'newest'
+      };
+      
+      if (this.searchInput) this.searchInput.value = '';
+      if (this.sortSelect) this.sortSelect.value = 'newest';
+      
+      this.updateFilters();
+      this.updateCategoryButtons();
+      this.updateTagButtons();
+      this.toggleClearButton();
+    }
+    
+    updateCategoryButtons() {
+      document.querySelectorAll('.category-filter').forEach(button => {
+        const category = button.getAttribute('data-category');
+        if (category === this.currentFilters.category) {
+          button.classList.add('bg-primary-600', 'text-white');
+          button.classList.remove('bg-gray-100', 'text-gray-700');
+        } else {
+          button.classList.remove('bg-primary-600', 'text-white');
+          button.classList.add('bg-gray-100', 'text-gray-700');
+        }
+      });
+    }
+    
+    updateTagButtons() {
+      document.querySelectorAll('.tag-filter').forEach(button => {
+        const tag = button.getAttribute('data-tag');
+        if (tag === this.currentFilters.tag) {
+          button.classList.add('bg-secondary-600', 'text-white');
+          button.classList.remove('bg-gray-100', 'text-gray-600');
+        } else {
+          button.classList.remove('bg-secondary-600', 'text-white');
+          button.classList.add('bg-gray-100', 'text-gray-600');
+        }
+      });
+    }
+    
+    toggleClearButton() {
+      if (this.currentFilters.search) {
+        this.clearSearch?.classList.remove('hidden');
+      } else {
+        this.clearSearch?.classList.add('hidden');
+      }
+    }
+    
+    reloadBlogPosts() {
+      // Dispatch custom event for blog posts reload
+      window.dispatchEvent(new CustomEvent('blogFiltersChanged', {
+        detail: this.currentFilters
+      }));
+    }
+    
+    debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+  }
+  
+  // Initialize search and filter when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    new SearchAndFilter();
+  });
+</script>
