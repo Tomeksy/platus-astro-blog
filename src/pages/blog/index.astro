@@ -23,7 +23,7 @@ const tags = await getAllTags();
 
 // Meta information
 const title = 'Blog | Hilfsmittel-Berater';
-const description = 'Lesen Sie informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.';
+const description = 'Entdecke informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.';
 ---
 
 <Layout>
@@ -43,7 +43,7 @@ const description = 'Lesen Sie informative Artikel über Kommunikationshilfen, H
             Blog
           </h1>
           <p class="text-lg md:text-xl text-white/90 leading-relaxed">
-            Informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.
+            Entdecke informative Artikel über Kommunikationshilfen, Hilfsmittel und Finanzierungsmöglichkeiten für Menschen mit Kommunikationsbeeinträchtigungen.
           </p>
         </div>
       </div>
@@ -65,7 +65,7 @@ const description = 'Lesen Sie informative Artikel über Kommunikationshilfen, H
               <div class="bg-white rounded-xl shadow-md p-8 text-center">
                 <h2 class="text-xl font-medium mb-4">Keine Beiträge gefunden</h2>
                 <p class="text-gray-600 mb-6">
-                  Zurzeit sind keine Beiträge in dieser Kategorie verfügbar. Bitte versuchen Sie es später noch einmal oder wählen Sie eine andere Kategorie.
+                  Zurzeit sind keine Beiträge verfügbar. Bitte versuche es später noch einmal oder wähle eine andere Kategorie.
                 </p>
                 <a href="/blog" class="text-primary-600 hover:text-primary-800 font-medium">
                   Zurück zur Blogübersicht
@@ -88,7 +88,21 @@ const description = 'Lesen Sie informative Artikel über Kommunikationshilfen, H
             <TagCloud tags={tags} />
             
             <!-- CTA Widget -->
-            <ChatbotCTA />
+            <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-6">
+              <div class="mb-4">
+                <h3 class="text-lg font-medium mb-2">Hast du weitere Fragen?</h3>
+                <p class="text-gray-700 text-sm">
+                  Speakii kann dir sofort bei spezifischen Fragen zu Hilfsmitteln und Finanzierungsmöglichkeiten helfen.
+                </p>
+              </div>
+              
+              <a href={import.meta.env.PUBLIC_CHATBOT_URL} class="inline-flex items-center px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-md shadow-sm transition-colors" target="_blank" rel="noopener">
+                <span>Mit Speakii sprechen</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>

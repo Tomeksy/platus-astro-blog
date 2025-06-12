@@ -24,7 +24,7 @@ const description = 'Die gesuchte Seite konnte nicht gefunden werden.';
         <div class="text-6xl font-bold text-primary-600 mb-4">404</div>
         <h1 class="text-3xl font-heading font-medium mb-4">Seite nicht gefunden</h1>
         <p class="text-gray-600 mb-8">
-          Die von Ihnen gesuchte Seite existiert nicht oder wurde verschoben.
+          Die von dir gesuchte Seite existiert nicht oder wurde verschoben.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a 
@@ -38,6 +38,24 @@ const description = 'Die gesuchte Seite konnte nicht gefunden werden.';
             class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md shadow-sm transition-colors"
           >
             Zum Blog
+          </a>
+        </div>
+        
+        <div class="mt-12 p-6 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl">
+          <h2 class="text-lg font-medium mb-2">Brauchst du Hilfe?</h2>
+          <p class="text-gray-600 mb-4 text-sm">
+            Speakii kann dir dabei helfen, die richtige Information zu finden.
+          </p>
+          <a 
+            href={import.meta.env.PUBLIC_CHATBOT_URL}
+            class="inline-flex items-center px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-md shadow-sm transition-colors"
+            target="_blank"
+            rel="noopener"
+          >
+            Mit Speakii sprechen
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </a>
         </div>
       </div>
