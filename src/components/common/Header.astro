@@ -14,12 +14,12 @@ const topCategories = categories
 ---
 
 <header id="site-header" class="fixed w-full top-0 z-50 transition-all duration-300">
-  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center min-h-[4rem]">
     <a href="/" class="relative z-10">
       <img 
         src="/speakii-logo.svg" 
         alt="Speakii Der Hilfsmittelberater Logo" 
-        class="h-12 w-auto md:h-16 lg:h-20"
+        class="h-10 w-auto md:h-12 lg:h-14"
       />
     </a>
     
@@ -206,11 +206,11 @@ const topCategories = categories
   function updateHeaderStyles() {
     if (window.scrollY > 50) {
       header.classList.add('bg-white', 'shadow-md');
-      header.classList.remove('py-4');
+      header.classList.remove('py-3');
       header.classList.add('py-2');
     } else {
       header.classList.remove('bg-white', 'shadow-md');
-      header.classList.add('py-4');
+      header.classList.add('py-3');
       header.classList.remove('py-2');
     }
     
