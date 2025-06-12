@@ -11,24 +11,27 @@ import ChatbotCTA from '../../../components/common/ChatbotCTA.astro';
 import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../../utils/content';
 import { slugify } from '../../../utils/helpers';
 
+export async function getStaticPaths() {
+  const tags = await getAllTags();
+  
+  return tags.map((tag) => ({
+    params: { tag: tag.slug },
+    props: { tagInfo: tag }
+  }));
+}
+
 // Get URL parameters
 const { tag } = Astro.params;
+const { tagInfo } = Astro.props;
 const page = Astro.url.searchParams.get('page');
 const currentPage = page ? parseInt(page) : 1;
-
-// Get all tags to find the proper name
-const allTags = await getAllTags();
-const tagInfo = allTags.find(t => slugify(t.name) === tag);
-
-if (!tagInfo) {
-  return Astro.redirect('/404');
-}
 
 // Get posts with pagination for this tag
 const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, undefined, tagInfo.name);
 
 // Get categories for sidebar
 const categories = await getAllCategories();
+const allTags = await getAllTags();
 
 // Meta information
 const title = `${tagInfo.name} | Hilfsmittel-Berater Blog`;

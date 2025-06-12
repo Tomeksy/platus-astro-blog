@@ -11,23 +11,26 @@ import ChatbotCTA from '../../../components/common/ChatbotCTA.astro';
 import { getPaginatedBlogPosts, getAllCategories, getAllTags } from '../../../utils/content';
 import { slugify } from '../../../utils/helpers';
 
+export async function getStaticPaths() {
+  const categories = await getAllCategories();
+  
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: { categoryInfo: category }
+  }));
+}
+
 // Get URL parameters
 const { category } = Astro.params;
+const { categoryInfo } = Astro.props;
 const { page } = Astro.url.searchParams || {};
 const currentPage = page ? parseInt(page.toString()) : 1;
-
-// Get all categories to find the proper name
-const allCategories = await getAllCategories();
-const categoryInfo = allCategories.find(cat => slugify(cat.name) === category);
-
-if (!categoryInfo) {
-  return Astro.redirect('/404');
-}
 
 // Get posts with pagination for this category
 const { posts, pagination } = await getPaginatedBlogPosts(currentPage, 9, categoryInfo.name);
 
-// Get tags for sidebar
+// Get all categories and tags for sidebar
+const allCategories = await getAllCategories();
 const tags = await getAllTags();
 
 // Meta information
