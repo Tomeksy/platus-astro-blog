@@ -4,22 +4,22 @@
 
 [[redirects]]
   from = "/blog/page/*"
-  to = "/blog/page/[page].html"
+  to = "/blog?page=:splat"
   status = 200
 
 [[redirects]]
   from = "/blog/category/*"
-  to = "/blog/category/[category].html"
+  to = "/blog/category/:splat"
   status = 200
 
 [[redirects]]
   from = "/blog/tag/*"
-  to = "/blog/tag/[tag].html"
+  to = "/blog/tag/:splat"
   status = 200
 
 [[redirects]]
   from = "/blog/*"
-  to = "/blog/[slug].html"
+  to = "/blog/:splat"
   status = 200
   
 [[redirects]]
