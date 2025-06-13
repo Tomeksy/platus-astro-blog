@@ -1,6 +1,5 @@
 import { format, isValid } from 'date-fns';
-import pkg from 'date-fns/locale/de/index.js';
-const { de } = pkg;
+import { de } from 'date-fns/locale';
 
 // Convert a string to a valid URL slug
 export function slugify(text: string): string {
