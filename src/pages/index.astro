@@ -537,88 +537,27 @@ const description = 'Triff speaKI, deinen 24/7 Berater für Assistierende Techno
           <div class="text-center mb-12">
             <div class="mb-4">
               <span class="bg-success-100 text-success-800 px-4 py-2 rounded-full text-sm font-medium">
-                Erfolgsgeschichten
+                Kundenbewertungen
               </span>
             </div>
             <h2 class="text-3xl md:text-4xl font-heading font-medium mb-6">
-              Echte Menschen, echte Erfolge
+              Was unsere Kunden sagen
             </h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Erfahre, wie unser Team bereits vielen Menschen zu besserer Kommunikation verholfen hat.
+              Echte Bewertungen von echten Kunden - direkt aus Google Reviews.
             </p>
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Success Story 1 -->
-            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-              <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-4">
-                  <span class="text-primary-600 font-bold text-lg">M</span>
-                </div>
-                <div>
-                  <div class="font-medium text-gray-900">Maria, 34</div>
-                  <div class="text-sm text-gray-600">Mutter von Leon (8, Autismus)</div>
-                </div>
-              </div>
-              <blockquote class="text-gray-700 italic mb-6">
-                "speaKI hat uns sofort die richtige Richtung gezeigt. Innerhalb von 2 Wochen hatte Leon sein erstes Kommunikationsgerät und kann jetzt endlich sagen, was er braucht."
-              </blockquote>
-              <div class="flex items-center text-sm text-success-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                Tablet mit UK-App erfolgreich implementiert
-              </div>
-            </div>
-            
-            <!-- Success Story 2 -->
-            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-              <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center mr-4">
-                  <span class="text-secondary-600 font-bold text-lg">T</span>
-                </div>
-                <div>
-                  <div class="font-medium text-gray-900">Thomas, 45</div>
-                  <div class="text-sm text-gray-600">ALS-Patient</div>
-                </div>
-              </div>
-              <blockquote class="text-gray-700 italic mb-6">
-                "Als meine Sprache schwächer wurde, war speaKI da. Das Augensteuerungssystem gibt mir meine Stimme zurück. Ich kann wieder mit meiner Familie sprechen."
-              </blockquote>
-              <div class="flex items-center text-sm text-success-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                Augensteuerungssystem erfolgreich angepasst
-              </div>
-            </div>
-            
-            <!-- Success Story 3 -->
-            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-              <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center mr-4">
-                  <span class="text-accent-600 font-bold text-lg">S</span>
-                </div>
-                <div>
-                  <div class="font-medium text-gray-900">Sarah, 28</div>
-                  <div class="text-sm text-gray-600">Logopädin</div>
-                </div>
-              </div>
-              <blockquote class="text-gray-700 italic mb-6">
-                "speaKI hilft mir bei der Beratung meiner Patienten enorm. Die schnellen, präzisen Antworten zu Finanzierung und Geräten sparen mir viel Zeit."
-              </blockquote>
-              <div class="flex items-center text-sm text-success-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                Professionelle Unterstützung für Therapeuten
-              </div>
-            </div>
+          <!-- Google Reviews Widget -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg">
+            <!-- Elfsight Google Reviews | Untitled Google Reviews -->
+            <script src="https://static.elfsight.com/platform/platform.js" async></script>
+            <div class="elfsight-app-55681a0b-de36-4770-8e71-a8ca790544b7" data-elfsight-app-lazy></div>
           </div>
           
           <div class="text-center mt-12">
             <p class="text-gray-600 mb-6">
-              Möchtest du auch deine Erfolgsgeschichte mit uns schreiben?
+              Möchtest du auch Teil unserer zufriedenen Kunden werden?
             </p>
             <a 
               href={import.meta.env.PUBLIC_CHATBOT_URL}
