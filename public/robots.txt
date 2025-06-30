@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://endearing-lily-dade62.netlify.app/sitemap-index.xml
+Sitemap: https://hilfsmittelberater.online/sitemap-index.xml
 
 # Optional: Crawl-delay (uncomment if needed)
 # Crawl-delay: 1

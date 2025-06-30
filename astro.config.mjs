@@ -5,7 +5,7 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [tailwind()],
   output: 'static',
-  site: 'https://endearing-lily-dade62.netlify.app',
+  site: 'https://hilfsmittelberater.online',
   server: {
     host: '0.0.0.0',
     port: 4321

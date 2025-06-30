@@ -27,7 +27,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL || Astro.site?.toString() || 'ht
 const finalCanonicalUrl = canonicalUrl || new URL(Astro.url.pathname, siteUrl).toString();
 
 const ogImage = createOgImageUrl(title, image);
-const siteName = 'Hilfsmittel-Berater.at';
+const siteName = 'Hilfsmittelberater.online';
 ---
 
 <SEO
