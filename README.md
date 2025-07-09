@@ -43,6 +43,10 @@ Hilfsmittel-Berater.at ist eine vertrauenswürdige Informationsquelle für Mensc
 └── package.json
 ```
 
+## Coderabbit AI Code review
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Tomeksy/platus-astro-blog?utm_source=oss&utm_medium=github&utm_campaign=Tomeksy%2Fplatus-astro-blog&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
+
 ## 🚀 Erste Schritte
 
 ### Voraussetzungen
