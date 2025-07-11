@@ -2,13 +2,6 @@
   publish = "dist"
   command = "npm run build"
 
-# Temporary countdown redirect - REMOVE AFTER JULY 11TH, 2025
-[[redirects]]
-  from = "/"
-  to = "/countdown"
-  status = 200
-  force = true
-
 [[redirects]]
   from = "/blog/page/*"
   to = "/blog?page=:splat"
