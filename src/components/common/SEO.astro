@@ -87,6 +87,22 @@ const siteName = 'Hilfsmittelberater.online';
 <script type="application/ld+json" set:html={JSON.stringify({
   '@context': 'https://schema.org',
   '@type': type === 'article' ? 'BlogPosting' : 'WebSite',
+  creator: {
+    '@type': 'Person',
+    name: 'Tom Symantzyk',
+    affiliation: [
+      {
+        '@type': 'Organization',
+        name: 'Harvest Flow',
+        url: 'https://www.harvestflow.ai'
+      },
+      {
+        '@type': 'Organization', 
+        name: 'BusinessPilot',
+        url: 'https://www.businesspilot.app'
+      }
+    ]
+  },
   ...(type === 'article' ? {
     headline: title,
     image: [ogImage],
