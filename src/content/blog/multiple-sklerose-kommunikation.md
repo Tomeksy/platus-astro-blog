@@ -4,7 +4,7 @@ description: "Multiple Sklerose kann die Kommunikation beeinträchtigen. Dieser 
 publishedDate: 2025-01-11
 author: "Platus Communicates Team"
 categories: ["Grundlagen"]
-featured: true
+featured: false
 draft: false
 coverImage: "https://harvestflowclients.s3.eu-north-1.amazonaws.com/ms_artikel_platus.webp"
 imageAlt: "Person verwendet ein Kommunikationshilfsmittel"
