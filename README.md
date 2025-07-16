@@ -158,8 +158,8 @@ Das Projekt ist für Netlify konfiguriert:
 ### Umgebungsvariablen
 
 ```bash
-PUBLIC_SITE_URL=https://hilfsmittel-berater.at
-PUBLIC_CHATBOT_URL=https://chat.hilfsmittel-berater.at
+PUBLIC_SITE_URL=https://hilfsmittelberater.online
+PUBLIC_CHATBOT_URL=https://speaki.io
 PUBLIC_MAIN_SITE_URL=https://www.platus.at
 ```
 
