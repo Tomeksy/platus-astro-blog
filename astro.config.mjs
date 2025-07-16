@@ -8,6 +8,6 @@ export default defineConfig({
   site: 'https://hilfsmittelberater.online',
   server: {
     host: '0.0.0.0',
-    port: 4321
+    port: 3000
   }
 });
