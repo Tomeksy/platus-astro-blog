@@ -1,7 +1,7 @@
 ---
 title: "ALS und Kommunikation: Wie du als Angehöriger optimal unterstützen kannst"
 description: "Als Angehöriger eines ALS-Patienten wirst du zum wichtigsten Kommunikationspartner. Hier erfährst du, wie du praktisch helfen und den Alltag gemeinsam meistern kannst."
-publishedDate: 2025-01-23
+publishedDate: 2025-07-23
 author: "Platus Communicates Team"
 categories: ["Grundlagen"]
 featured: true
