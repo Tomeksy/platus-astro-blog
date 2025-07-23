@@ -4,7 +4,7 @@ description: "Eine ALS-Diagnose bedeutet nicht das Ende der Kommunikation. Erfah
 publishedDate: 2025-07-15
 author: "Platus Communicates Team"
 categories: ["Grundlagen"]
-featured: true
+featured: false
 draft: false
 coverImage: "https://harvestflowclients.s3.eu-north-1.amazonaws.com/platus/betroffene_platus_blog.webp"
 imageAlt: "Person mit ALS verwendet Kommunikationshilfsmittel"
