@@ -1,7 +1,7 @@
 ---
 title: "ALS und Kommunikation: Rechtzeitig vorsorgen - Ein Leitfaden für Betroffene"
 description: "Eine ALS-Diagnose bedeutet nicht das Ende der Kommunikation. Erfahre, wie mit rechtzeitiger Vorbereitung deine Stimme bewahrt und du weiterhin selbstbestimmt kommunizieren kannst."
-publishedDate: 2025-01-15
+publishedDate: 2025-07-15
 author: "Platus Communicates Team"
 categories: ["Grundlagen"]
 featured: true
