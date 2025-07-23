@@ -1,7 +1,7 @@
 ---
 title: "Multiple Sklerose und Kommunikation: Was Betroffene und Angehörige wissen sollten"
 description: "Multiple Sklerose kann die Kommunikation beeinträchtigen. Dieser Artikel erklärt, wie MS das Sprechen beeinflusst und welche Hilfsmittel und Strategien den Alltag erleichtern können."
-publishedDate: 2025-01-11
+publishedDate: 2025-07-11
 author: "Platus Communicates Team"
 categories: ["Grundlagen"]
 featured: false
