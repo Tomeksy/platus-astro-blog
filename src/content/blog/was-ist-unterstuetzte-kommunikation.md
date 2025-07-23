@@ -1,7 +1,7 @@
 ---
 title: "Was ist Unterstützte Kommunikation? Grundlagen einfach erklärt"
 description: "Unterstützte Kommunikation (UK) hilft Menschen ohne oder mit wenig Lautsprache beim Kommunizieren. Dieser Leitfaden erklärt die Grundlagen, Methoden und praktische Anwendung von UK im Alltag."
-publishedDate: 2025-01-11
+publishedDate: 2025-07-10
 author: "Platus Communicates Team"
 categories: ["Grundlagen"]
 featured: true
