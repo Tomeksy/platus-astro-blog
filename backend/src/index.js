@@ -188,6 +188,83 @@ fastify.post('/webhook', async (request, reply) => {
   }
 });
 
+// GET webhook endpoint for Airtable button (uses query params)
+fastify.get('/webhook', async (request, reply) => {
+  try {
+    fastify.log.info('GET Webhook from Airtable:', request.query);
+    
+    // Extract record_id from query parameters
+    const recordId = request.query.record_id || request.query.recordId;
+    const action = request.query.action || 'acknowledge'; // Default to safe mode
+    
+    if (!recordId) {
+      return reply.code(400).send({
+        success: false,
+        error: 'Missing record_id in query parameters',
+        received: request.query,
+        hint: 'Expected query parameter: ?record_id=recXXXXXXXXXXXX'
+      });
+    }
+    
+    // Handle different actions (same as POST endpoint)
+    switch (action) {
+      case 'test':
+        // Test the article without publishing
+        try {
+          const testResult = await articlePublisher.testProcess(recordId);
+          return {
+            success: true,
+            message: 'Test successful - article ready for publishing',
+            data: testResult
+          };
+        } catch (testError) {
+          return reply.code(500).send({
+            success: false,
+            error: 'Test failed',
+            message: testError.message
+          });
+        }
+        
+      case 'publish':
+        // Publish the article to GitHub
+        try {
+          const publishResult = await articlePublisher.processArticle(recordId);
+          return {
+            success: true,
+            message: 'Article published successfully via Airtable button',
+            data: publishResult
+          };
+        } catch (publishError) {
+          return reply.code(500).send({
+            success: false,
+            error: 'Publishing failed',
+            message: publishError.message
+          });
+        }
+        
+      default:
+        // Default: just acknowledge receipt
+        return {
+          success: true,
+          message: 'Webhook received from Airtable button',
+          data: {
+            recordId: recordId,
+            action: action,
+            timestamp: new Date().toISOString(),
+            hint: 'Add ?action=test or ?action=publish to control behavior'
+          }
+        };
+    }
+  } catch (error) {
+    fastify.log.error('GET Webhook error:', error);
+    return reply.code(500).send({
+      success: false,
+      error: 'Internal server error',
+      message: error.message
+    });
+  }
+});
+
 // Test webhook endpoint
 fastify.get('/webhook/test', async (request, reply) => {
   return {
