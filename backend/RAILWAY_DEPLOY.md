@@ -3,10 +3,20 @@
 ## Two Ways to Deploy
 
 ### Option 1: Via Railway Dashboard (Recommended)
+
+**⚠️ CRITICAL: You MUST set the Root Directory!**
+
 1. Connect your GitHub repository to Railway
-2. In Railway settings, set **Root Directory** to: `backend`
-3. Railway will auto-detect the start command from package.json
+2. **In Railway Dashboard:**
+   - Go to **Settings** → **General** tab
+   - Find **"Root Directory"** field
+   - Type exactly: `backend` (no slashes, just the word)
+   - Click **"Save Changes"**
+   - **Redeploy** to apply changes
+3. Railway will auto-detect the start command from backend's package.json
 4. Add environment variables from `.env.example`
+
+**Note:** The `railway.json` in the root also specifies this, but ensure the dashboard setting matches!
 
 ### Option 2: Using Railway CLI
 ```bash
@@ -64,8 +74,16 @@ The backend includes:
 
 ## Troubleshooting
 
-If deployment fails:
+### ⚠️ If Railway runs the frontend instead of backend:
+**Symptom:** Logs show `astro dev` or `hilfsmittel-berater-blog` 
+**Solution:** 
+1. Go to Railway Dashboard → Settings → General
+2. Set **Root Directory** to `backend`
+3. Save and redeploy
+
+### Other issues:
 1. Check Railway logs for specific errors
 2. Ensure all required environment variables are set
 3. Verify Node.js version is >=18.0.0
-4. Check that `backend` is set as root directory
+4. Confirm `backend` is set as root directory
+5. Check that PORT env variable is NOT manually set (Railway auto-sets this)
