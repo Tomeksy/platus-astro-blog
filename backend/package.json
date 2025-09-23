@@ -1,0 +1,27 @@
+{
+  "name": "hilfsmittelberater-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blog",
+    "automation",
+    "content-generation"
+  ],
+  "author": "Platus Team",
+  "license": "ISC",
+  "description": "Backend service for automated blog article creation and deployment",
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "dotenv": "^17.2.2",
+    "fastify": "^5.6.1"
+  },
+  "devDependencies": {
+    "pino-pretty": "^13.1.1"
+  }
+}

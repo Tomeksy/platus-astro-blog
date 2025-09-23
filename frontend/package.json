@@ -1,0 +1,27 @@
+{
+  "name": "hilfsmittel-berater-blog",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "NODE_OPTIONS=--max_old_space_size=8192 astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.4.1",
+    "@astrojs/tailwind": "^5.0.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "astro": "^4.2.6",
+    "astro-seo": "^0.8.0",
+    "date-fns": "^2.30.0",
+    "markdown-it": "^13.0.2",
+    "sharp": "^0.32.6",
+    "tailwindcss": "^3.3.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
