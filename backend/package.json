@@ -16,6 +16,9 @@
   "author": "Platus Team",
   "license": "ISC",
   "description": "Backend service for automated blog article creation and deployment",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
     "dotenv": "^17.2.2",
