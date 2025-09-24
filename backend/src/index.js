@@ -7,6 +7,9 @@ import articlePublisher from './services/articlePublisher.js';
 import airtableService from './services/airtable.js';
 import githubService from './services/github.js';
 import openaiService from './services/openai.js';
+import supabaseService from './services/supabase.js';
+import ContentGenerator from './services/contentGenerator.js';
+import generateRoutes from './routes/generate.js';
 
 // Load environment variables
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +36,9 @@ await fastify.register(cors, {
   origin: process.env.CORS_ORIGIN || true,
   credentials: true
 });
+
+// Register routes
+await fastify.register(generateRoutes, { prefix: '/api/generate' });
 
 // Health check endpoint
 fastify.get('/health', async (request, reply) => {

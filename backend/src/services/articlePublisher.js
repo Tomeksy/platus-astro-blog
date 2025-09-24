@@ -24,7 +24,11 @@ class ArticlePublisher {
       const { fields } = article;
       
       // Step 2: Generate/enhance content if needed
-      let content = fields.Content || fields.content;
+      let content = fields.Content || fields.content || fields['Article Content'];
+      
+      if (!content) {
+        throw new Error('No content found in article record');
+      }
       
       if (fields['Needs AI Processing']) {
         console.log('🤖 Enhancing content with AI...');
@@ -35,14 +39,14 @@ class ArticlePublisher {
       }
       
       // Step 3: Generate SEO metadata if missing
-      if (!fields.Description || !fields.Keywords) {
+      if (!fields.Description && !fields.description) {
         console.log('🔍 Generating SEO metadata...');
         const seoData = await openaiService.generateSEOMetadata(
-          fields.Title || fields.title,
+          fields['Main Post Title'] || fields.Title || fields.title,
           content
         );
         // Parse and add to fields (simplified for now)
-        fields.Description = fields.Description || seoData;
+        fields.Description = seoData;
       }
       
       // Step 4: Format as markdown

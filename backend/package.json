@@ -22,12 +22,16 @@
   "dependencies": {
     "@fastify/cors": "^11.1.0",
     "@octokit/rest": "^20.0.2",
+    "@supabase/supabase-js": "^2.39.0",
     "airtable": "^0.12.2",
     "dotenv": "^17.2.2",
     "fastify": "^5.6.1",
-    "openai": "^4.20.0"
+    "openai": "^4.20.0",
+    "winston": "^3.11.0",
+    "express": "^4.19.2"
   },
   "devDependencies": {
-    "pino-pretty": "^13.1.1"
+    "pino-pretty": "^13.1.1",
+    "nodemon": "^3.1.0"
   }
 }
