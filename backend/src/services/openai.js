@@ -199,9 +199,9 @@ Achte auf eine klare Struktur mit informativen Überschriften.`;
    */
   async createEmbedding(text) {
     if (!this.client) {
-      logger.warn('OpenAI client not initialized, cannot create embedding');
-      // Return a zero vector or handle as an error, depending on desired behavior
-      return Array(1536).fill(0);
+      const msg = 'OpenAI client not initialized – embeddings unavailable';
+      logger.error(msg);
+      throw new Error(msg);
     }
 
     try {
@@ -217,11 +217,8 @@ Achte auf eine klare Struktur mit informativen Überschriften.`;
       
       return response.data[0].embedding;
     } catch (error) {
-      logger.error('Failed to create embedding', {
-        error: error.message,
-      });
-      // Fallback to a zero vector on error
-      return Array(1536).fill(0);
+      logger.error('Failed to create embedding', { error: error.message });
+      throw error;
     }
   }
 

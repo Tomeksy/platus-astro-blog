@@ -109,14 +109,8 @@ class SupabaseService {
    * Get embedding for a text query (placeholder - would use OpenAI in production)
    */
   async getEmbedding(text) {
-    // This would typically call OpenAI's embedding API
-    // For now, returning a mock embedding
-    logger.debug('Generating embedding for text', {
-      textLength: text.length
-    });
-    
-    // Mock embedding - in production, this would call OpenAI
-    return await openAIService.createEmbedding(text);
+    logger.debug('Generating embedding for text', { textLength: text.length });
+    return await openAIService.createEmbedding(text); // will throw if unavailable
   }
   
   /**

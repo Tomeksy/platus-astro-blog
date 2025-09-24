@@ -57,7 +57,23 @@ const generateRoutes = async (fastify, options) => {
       
       const generator = new ContentGenerator();
       const result = await generator.generateBlogArticle(topic, { intent, ...options });
-      
+
+      // ===================== NEW CODE =====================
+      // Save generated article to Airtable drafts table
+      let airtableRecordId = null;
+      try {
+        if (generator.airtableService && generator.airtableService.createDraft) {
+          const draftRecord = await generator.airtableService.createDraft(result);
+          airtableRecordId = draftRecord.id;
+          fastify.log.info('Article saved to Airtable drafts', { airtableRecordId });
+        } else {
+          fastify.log.warn('Airtable service unavailable, skipping save');
+        }
+      } catch (airtableError) {
+        fastify.log.error('Failed to save article to Airtable:', airtableError);
+      }
+      // =================== END NEW CODE ===================
+
       return {
         success: true,
         message: 'Article generated successfully',
@@ -69,7 +85,8 @@ const generateRoutes = async (fastify, options) => {
           qualityScore: result.qualityScore,
           generationTime: result.generationTime,
           keywords: result.Keywords,
-          primaryKeywords: result['Primary Keywords']
+          primaryKeywords: result['Primary Keywords'],
+          airtableRecordId
         },
         timestamp: new Date().toISOString()
       };

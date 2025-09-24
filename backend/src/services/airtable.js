@@ -91,6 +91,65 @@ class AirtableService {
   }
 
   /**
+   * Create a new draft record in Airtable
+   * @param {Object} fields - Article data keyed by Airtable column names
+   */
+  async createDraft(fields) {
+    if (!this.draftsTable) {
+      throw new Error('Airtable drafts table not configured');
+    }
+
+    try {
+      // Convert array fields to CSV strings where Airtable expects text
+      const preparedFields = { ...fields };
+      if (Array.isArray(preparedFields.Keywords)) {
+        preparedFields.Keywords = preparedFields.Keywords.join(', ');
+      }
+      if (Array.isArray(preparedFields['Primary Keywords'])) {
+        preparedFields['Primary Keywords'] = preparedFields['Primary Keywords'].join(', ');
+      }
+
+      // If Airtable uses a singular column name, map it automatically
+      if (!('Primary Keywords' in preparedFields) && 'Primary Keyword' in preparedFields) {
+        preparedFields['Primary Keyword'] = Array.isArray(preparedFields['Primary Keyword'])
+          ? preparedFields['Primary Keyword'].join(', ')
+          : preparedFields['Primary Keyword'];
+      }
+
+      // Map target audience to allowed single-select options
+      const mapAudience = value => {
+        if (!value) return 'Betroffener';
+        const v = value.toLowerCase();
+        if (v.includes('angehör')) return 'Angehöriger';
+        if (v.includes('fach') || v.includes('therapeut')) return 'Fachpersonal';
+        return 'Betroffener';
+      };
+
+      const allowedFields = {
+        'Main Post Title': preparedFields['Main Post Title'],
+        'Intent': preparedFields.Intent,
+        'Category': preparedFields.Category,
+        'Keywords': preparedFields.Keywords,
+        'Primary Keywords': preparedFields['Primary Keywords'],
+        'Article Content': preparedFields['Article Content'],
+        'Target Audience': mapAudience(preparedFields.targetAudience || preparedFields['Target Audience'])
+      };
+
+      const record = await this.draftsTable.create(allowedFields);
+
+      console.log(`✅ Draft created in Airtable: ${record.id}`);
+      return {
+        id: record.id,
+        fields: record.fields,
+        createdTime: record._rawJson.createdTime
+      };
+    } catch (error) {
+      console.error('Failed to create draft in Airtable:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Test connection
    */
   async testConnection() {
