@@ -1,22 +1,57 @@
 # Implementation Roadmap & To-Do List
 
 ## Current System Analysis
+**Last Updated:** September 27, 2025
 
 **What's Working:**
 - ✅ Backend server running on Fastify with health endpoints
 - ✅ Content generation pipeline operational (generates 800+ word articles)
-- ✅ OpenAI integration functional with gpt-4o-mini
+- ✅ OpenAI integration functional with gpt-5-mini-2025-08-07
 - ✅ Airtable draft creation working
-- ✅ Supabase vector search implemented with embeddings
+- ✅ Supabase vector search WITH speaKI's shared knowledge base (147 records)
 - ✅ Duplicate detection system in place
+- ✅ All 17 Platus-specific prompts implemented
+- ✅ Du-form addressing throughout
+- ✅ Knowledge retrieval from same database as speaKI
+- ✅ Category mapping (PRODUKTINFO → products, etc.)
 
 **What Needs Work:**
-- ⚠️ Generic prompts instead of Platus-specific context
-- ⚠️ Only 2 intent categories instead of 4
-- ⚠️ Missing B1 reading level compliance
-- ⚠️ Using formal "Sie" instead of informal "Du"
-- ⚠️ No internal article linking system
+- ❌ Primary keyword generation BROKEN (empty array output)
+- ❌ Workflow order inefficient (queries before keyword generation)
+- ❌ No mid-generation knowledge retrieval capability
+- ⚠️ B1 compliance partial - sentences too choppy (5-7 word fragments)
+- ⚠️ Generic topic titles (repetitive "Alles was Sie wissen müssen")
 - ❌ GitHub integration (token issues)
+- ❌ No internal article linking system yet
+
+---
+
+## Recent Achievements (September 27, 2025)
+
+### Successfully Completed:
+1. **Knowledge Base Integration**
+   - Connected to speaKI's Supabase database
+   - Using same `match_documents` RPC function
+   - 147 knowledge records accessible
+   - Proper embedding model (text-embedding-3-small)
+
+2. **Prompt Optimization**
+   - All 17 prompts converted to Platus voice
+   - Du-form implemented throughout
+   - Company context integrated
+   - speaKI mentions where appropriate
+
+3. **Bug Fixes**
+   - Fixed table name mismatch (documents → knowledge_base)
+   - Fixed category mapping for speaKI's format
+   - Lowered relevance threshold to 0.4
+   - Fixed const/let variable error in retry logic
+
+### Critical Issues Discovered:
+1. **Primary Keywords:** Generation logic flawed - uses title words instead of topic analysis
+2. **Workflow Order:** Keywords should be generated BEFORE knowledge query
+3. **Sentence Structure:** German B1 requires 10-15 word sentences, not 5-word fragments
+4. **Mid-Generation Retrieval:** Not implemented - cannot request additional knowledge during writing
 
 ---
 
@@ -24,9 +59,7 @@
 
 ### **MUST DO BEFORE PHASE 1:**
 1. **Airtable Field Changes**
-   - [ ] Change "Intent" field from "Single line text" to "Single select"
-   - [ ] Add exact options: `Informational`, `Investigational`, `Navigational`, `Commercial`
-   - [ ] Verify "Target Audience" field has options: `Betroffener`, `Angehöriger`, `Fachpersonal`
+   - [x] Verify "Target Audience" field has options: `Betroffener`, `Angehöriger`, `Fachpersonal`
 
 2. **GitHub Token Update**
    - [ ] Generate new personal access token with repo permissions
@@ -34,10 +67,111 @@
    - [ ] Verify token has write access to the blog repository
 
 3. **Company Context Preparation**
-   - [ ] Provide Platus company description (2-3 sentences)
-   - [ ] List main services offered
-   - [ ] Define company philosophy/mission
-   - [ ] Provide contact information for CTAs
+   - [x] Provide Platus company description (2-3 sentences)
+   - [x] List main services offered
+   - [x] Define company philosophy/mission
+   - [x] Provide contact information for CTAs
+
+## **Company Context for Content Generation**
+
+### **Platus Company Description (2-3 sentences)**
+"Platus ist Österreichs führender Experte für Assistierende Technologien mit über 21 Jahren Erfahrung in der Unterstützung von Menschen mit Beeinträchtigungen. Als Spezialisten für augmentative und alternative Kommunikation (AAC) und Augensteuerungstechnologie bietet Platus umfassende, maßgeschneiderte Lösungen für Menschen mit Kommunikationsbeeinträchtigungen. Das Unternehmen betreibt Hilfsmittelberater.online als digitalen Service mit dem KI-Berater speaKI für 24/7 Unterstützung und Beratung."
+
+### **Main Services Offered**
+- **Kommunikationshilfen** (Sprachcomputer, Tablets mit UK-Software und vieles mehr, alles zu finden in der Wissensdatenbank auf Supabase table "knowledge_base")
+- **Augensteuerungssysteme** (Grid Pad Serie und vieles mehr, alles zu finden in der Wissensdatenbank auf Supabase table "knowledge_base")
+- **Umfeldsteuerung** (HouseMate für Raumkontrolle und vieles mehr, alles zu finden in der Wissensdatenbank auf Supabase table "knowledge_base")
+- **Individuelle Beratung** (persönlich und digital via speaKI)
+- **Finanzierungsberatung** (Unterstützung bei Kostenübernahme durch Krankenkassen)
+- **Schulungen und Kurse** (UK-Webkurse, Anwenderschulungen, Klinik Schulungen)
+- **Lebenslange Betreuung** (Support, Updates, Anpassungen)
+- **Hilfsmittel-Erprobung** (Testphasen vor Versorgung)
+
+### **Company Philosophy/Mission**
+**Mission Statement:** "Das Hilfsmittel muss passen! – mit individueller Unterstützung und moderner Technologie."
+
+**Core Beliefs:**
+- "Kommunikation ist ein grundlegendes Menschenrecht"
+- "Jeder Mensch ist einzigartig und benötigt individuelle Lösungen"
+- "Selbstbestimmung und Teilhabe sind wichtige Stützpfeiler"
+
+**Value Proposition:** "Wir finden die bestmöglichen Lösungen, damit jeder Mensch seine Gedanken, Wünsche und Bedürfnisse ausdrücken kann."
+
+### **Contact Information for CTAs**
+
+**Primary CTA:** "Jetzt mit speaKI sprechen" (24/7 KI-Beratung)
+
+**Secondary CTAs:**
+- "Kostenlose Beratung vereinbaren"
+- "Hilfsmittel testen"
+- "Finanzierung prüfen"
+- "Expertenteam kontaktieren"
+
+**Contact information for CTAs**
+- https://speaki.io/
+
+### **Target Audiences for Content**
+- Menschen mit ALS, MS, SMA, Zerebralparese
+- Autismus-Spektrum-Störungen
+- Aphasie-Patienten
+- Angehörige und Betreuer
+- Therapeuten und Fachkräfte
+- Eltern von Kindern mit Beeinträchtigungen
+
+---
+
+## URGENT FIXES REQUIRED (Before Production)
+**These issues must be resolved before the system is production-ready**
+
+### Issue 1: Primary Keyword Generation BROKEN
+**Current Problem:** 
+- Primary keywords array is empty in all generated articles
+- Logic extracts from title AFTER generation instead of topic BEFORE query
+- Uses words > 4 chars from title like "serie", "alles" - not meaningful
+
+**Solution Required:**
+- **AI Task:** Rewrite `generatePrimaryKeywords()` to analyze topic string
+- **AI Task:** Generate keywords BEFORE knowledge query
+- **Human Task:** Provide examples of good primary keywords for topics
+
+### Issue 2: Workflow Order Inefficient  
+**Current Flow (Wrong):**
+```
+Topic → Query Knowledge → Generate Keywords → Write
+```
+
+**Should Be:**
+```
+Topic → Generate Keywords → Query Knowledge WITH Keywords → Write
+```
+
+**Impact:** 60-70% reduction in vector search costs possible
+
+**Solution Required:**
+- **AI Task:** Restructure workflow in `generateBlogArticle()`
+- **AI Task:** Use keywords to guide knowledge retrieval
+- **Human Task:** Approve new workflow sequence
+
+### Issue 3: Sentence Structure Too Choppy
+**Current Output Example:**
+"Das Grid Pad ist toll. Es hilft Menschen. Die Bedienung ist einfach. Jeder kann es nutzen."
+
+**Should Be:**
+"Das Grid Pad ist ein tolles Hilfsmittel, das Menschen mit Einschränkungen dabei hilft, selbstständig zu kommunizieren."
+
+**Solution Required:**
+- **Human Task:** Provide 5-10 examples of good B1 German sentences
+- **AI Task:** Adjust prompts to encourage 10-15 word sentences
+- **AI Task:** Add sentence variety patterns to prompts
+
+### Issue 4: No Mid-Generation Knowledge Retrieval
+**Current:** All knowledge must be gathered upfront
+**Needed:** AI should request specific details during writing
+
+**Solution Required:**
+- **AI Task:** Implement callback mechanism for knowledge requests
+- **AI Task:** Add "knowledge gap detection" during generation
+- **Human Task:** Define which types of information can be requested
 
 ---
 
@@ -191,10 +325,10 @@
 
 ## Quick Wins (Can Do Immediately)
 
-1. **Fix Intent Mapping** - Update the intent handling to prepare for 4 categories
-2. **Add Du-Form** - Simple find/replace in prompts
-3. **Improve Logging** - Enhance existing Winston logging
-4. **Test Duplicate Detection** - Verify the sophisticated duplicate checking works
+1. ~~**Fix Intent Mapping**~~ - ✅ Done (4 categories implemented)
+2. ~~**Add Du-Form**~~ - ✅ Done (all prompts use Du)
+3. ~~**Improve Logging**~~ - ✅ Done (comprehensive Winston logging added)
+4. ~~**Test Duplicate Detection**~~ - ✅ Working (verified in production)
 
 ---
 
@@ -226,13 +360,15 @@
 
 ## Next Immediate Actions
 
-1. **Human Tasks First**: Complete Airtable field configuration
-2. **Start Phase 1**: Implement intent categories and Du-form
-3. **Test Current System**: Verify all working components
-4. **Document Issues**: Keep track of any new problems discovered
+1. **Human Decision Required**: Approve workflow reordering (keywords first)
+2. **Human Input Needed**: Provide examples of good B1 German writing style
+3. **AI Task**: Fix primary keyword generation from topic analysis
+4. **AI Task**: Restructure workflow to be more efficient
+5. **Testing**: Generate test articles with new workflow
+6. **Human Review**: Evaluate sentence structure improvements
 
 ---
 
-*Last Updated: 24. September 2025*
+*Last Updated: 27. September 2025*
 *Document Status: Active Development*
 *Owner: Tom Symantzyk*

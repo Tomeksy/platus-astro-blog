@@ -57,12 +57,12 @@ class SupabaseService {
    */
   async semanticSearch(query, options = {}) {
     const {
-      table = 'documents',
+      table = 'knowledge_base',  // Updated to correct table name
       embeddingColumn = 'embedding',
       contentColumn = 'content',
       metadataColumn = 'metadata',
       limit = 10,
-      threshold = 0.7  // Lower threshold for blog content discovery
+      threshold = 0.4  // Match speaKI's threshold for better results
     } = options;
     
     if (!this.client) {
@@ -80,7 +80,7 @@ class SupabaseService {
       
       // Call the RPC function for vector search
       const { data, error } = await this.client
-        .rpc('match_documents', {
+        .rpc('match_documents', {  // Use the same RPC function as speaKI
           query_embedding: await this.getEmbedding(query),
           match_threshold: threshold,
           match_count: limit

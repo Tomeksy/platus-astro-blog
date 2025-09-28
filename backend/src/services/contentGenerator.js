@@ -330,7 +330,7 @@ class ContentGenerator {
    */
   async queryVectorDB(query, options = {}) {
     const {
-      threshold = 0.65,  // Lower threshold for broader blog content discovery
+      threshold = 0.4,  // Match speaKI's threshold for consistency
       limit = 20,        // More results for comprehensive knowledge
       retries = this.maxRetries
     } = options;
@@ -347,8 +347,9 @@ class ContentGenerator {
     while (attempt < retries) {
       try {
         if (!this.supabaseService || !this.supabaseService.client) {
-          logger.warn('Vector DB not available, using fallback');
-          return this.getFallbackKnowledge(query);
+          const error = new Error('Vector DB not available - cannot generate content without knowledge base');
+          logger.error('Vector DB connection required', { error: error.message });
+          throw error;
         }
         
         const results = await this.supabaseService.semanticSearch(query, {
@@ -384,7 +385,7 @@ class ContentGenerator {
       attempts: attempt
     });
     
-    return this.getFallbackKnowledge(query);
+    throw new Error(`Vector DB query failed after ${attempt} attempts: ${lastError?.message}. Cannot proceed without knowledge base.`);
   }
   
   /**
@@ -429,8 +430,19 @@ class ContentGenerator {
         lowRelevance.push(result);
       }
       
-      // Categorize by content type
-      const category = result.metadata?.category || 'guides';
+      // Categorize by content type - map speaKI categories to our expected format
+      const rawCategory = result.metadata?.category || '';
+      let category = 'guides'; // default
+      
+      // Map speaKI's category values to our expected categories
+      if (rawCategory.includes('PRODUKT') || result.metadata?.product_name) {
+        category = 'products';
+      } else if (rawCategory.includes('BERATUNG') || rawCategory.includes('SERVICE')) {
+        category = 'services';
+      } else if (rawCategory.includes('FAQ') || result.metadata?.section?.includes('FAQ')) {
+        category = 'faqs';
+      }
+      
       if (synthesized[category]) {
         synthesized[category].push({
           content: result.content,
@@ -521,7 +533,7 @@ class ContentGenerator {
         logger.debug(`Executing query: "${query.text}" (${query.type})`);
         
         const results = await this.queryVectorDB(query.text, {
-          threshold: query.type === 'broad' ? 0.60 : 0.65,
+          threshold: query.type === 'broad' ? 0.35 : 0.4,  // Slightly lower for broad search
           limit: query.type === 'broad' ? 25 : 15
         });
         
@@ -546,19 +558,30 @@ class ContentGenerator {
       
       // Handle insufficient results
       if (allResults.length < 5) {
-        logger.warn('Insufficient results, using fallback knowledge', {
+        logger.warn('Insufficient results from knowledge base', {
           currentResults: allResults.length,
           topic
         });
         
-        // Use fallback knowledge when vector DB is empty
-        const fallbackKnowledge = this.getFallbackKnowledge(topic);
-        allResults.push(...fallbackKnowledge);
-        
-        logger.info('Added fallback knowledge', {
-          fallbackCount: fallbackKnowledge.length,
-          totalResults: allResults.length
+        // Try one more broad search with lower threshold
+        logger.info('Attempting broader search with lower threshold');
+        const broadResults = await this.queryVectorDB(`${topic} Kommunikation Hilfsmittel`, {
+          threshold: 0.3,  // Very low threshold for last-resort broad search
+          limit: 30
         });
+        
+        if (broadResults && broadResults.length > 0) {
+          allResults.push(...broadResults);
+          logger.info('Broader search added results', {
+            newResults: broadResults.length,
+            totalResults: allResults.length
+          });
+        }
+        
+        // If still insufficient, throw error
+        if (allResults.length < 3) {
+          throw new Error(`Insufficient knowledge found for topic: ${topic}. Only ${allResults.length} results found. Minimum 3 required.`);
+        }
       }
       
       // Deduplicate results based on content similarity
@@ -633,40 +656,6 @@ class ContentGenerator {
     return unique;
   }
   
-  /**
-   * Fallback knowledge when vector DB is unavailable
-   */
-  getFallbackKnowledge(query) {
-    logger.info('Using fallback knowledge generation');
-    
-    return [
-      {
-        content: `Sprachcomputer sind spezialisierte Kommunikationshilfsmittel für Menschen mit Sprach- und Sprechstörungen. Sie ermöglichen es Betroffenen, sich über alternative Kommunikationsmethoden auszudrücken und am gesellschaftlichen Leben teilzunehmen.`,
-        similarity: 0.8,
-        metadata: { category: 'guides', source: 'fallback' }
-      },
-      {
-        content: `Was ist ein Sprachcomputer? Ein Sprachcomputer ist ein technisches Hilfsmittel, das Menschen mit Kommunikationsbeeinträchtigungen dabei unterstützt, sich auszudrücken.`,
-        similarity: 0.7,
-        metadata: { category: 'faqs', source: 'fallback' }
-      },
-      {
-        content: `Die Kostenübernahme für Sprachcomputer erfolgt in der Regel über die Krankenkasse. Voraussetzung ist ein ärztliches Attest und eine entsprechende Verordnung.`,
-        similarity: 0.6,
-        metadata: { category: 'services', source: 'fallback' }
-      },
-      {
-        content: `Bekannte Hersteller von Sprachcomputern sind Tobii Dynavox, Grid 3 und Prentke Romich. Jedes System hat spezifische Vor- und Nachteile.`,
-        similarity: 0.6,
-        metadata: { category: 'products', source: 'fallback' }
-      },
-      {
-        content: `Die Einrichtung eines Sprachcomputers sollte von einem erfahrenen Therapeuten oder Berater begleitet werden. Wichtig ist die individuelle Anpassung an die Bedürfnisse des Nutzers.`,
-        similarity: 0.7,
-        metadata: { category: 'guides', source: 'fallback' }
-      }
-    ];
-  }
 
   /**
    * Generate topic ideas from vector knowledge
@@ -858,7 +847,7 @@ class ContentGenerator {
   async selectViableTopics(topicIdeas, options = {}) {
     const {
       maxSelected = 3,
-      minRelevance = 0.6
+      minRelevance = 0.4  // Lowered to match speaKI's threshold
     } = options;
     
     logger.info('Selecting viable topics', {
@@ -1182,7 +1171,7 @@ class ContentGenerator {
       // Step 3: Select viable topic
       const selection = await this.selectViableTopics(topicIdeas, { 
         maxSelected: 1,
-        minRelevance: 0.6 
+        minRelevance: 0.4  // Match speaKI's threshold
       });
       
       if (selection.viable.length === 0) {
@@ -1245,20 +1234,21 @@ class ContentGenerator {
     let lastError = null;
     
     // Prepare knowledge context
-    const knowledgeContext = this.prepareKnowledgeContext(knowledge);
+    let knowledgeContext = this.prepareKnowledgeContext(knowledge);
     
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         logger.info(`Content generation attempt ${attempt}/${maxAttempts}`, { workflowId });
         
-        // Call OpenAI service
+        // OPTIMIZED_17: Article Generation Instruction
         const result = await openAIService.generateArticle(
-          `Erstelle einen umfassenden Artikel basierend auf dem bereitgestellten Wissen.`,
+          `Erstelle einen Artikel, der das bereitgestellte Wissen in echte Hilfe verwandelt.\nDer Leser soll nach dem Lesen wissen: "So kann ich/mein Angehöriger konkret weiterkommen."\nNutze die Wissensdatenbank.`,
           {
             topic: topic.title,
             category: topic.category,
             intent: topic.intent,
-            keywords: [...(topic.keywords || []), ...(topic.primaryKeywords || [])],
+            keywords: topic.keywords || [],
+            primaryKeywords: topic.primaryKeywords || [],
             targetAudience: topic.targetAudience,
             knowledge: knowledgeContext,
             wordCount: '800-1200'
@@ -1351,7 +1341,11 @@ class ContentGenerator {
       });
     }
     
-    return context || 'Nutze dein Fachwissen über Unterstützte Kommunikation.';
+    if (!context || context.trim().length < 100) {
+      throw new Error('Insufficient knowledge context available. Cannot generate quality content without proper knowledge base.');
+    }
+    
+    return context;
   }
   
   /**

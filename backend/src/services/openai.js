@@ -76,6 +76,7 @@ class OpenAIService {
         topic,
         category,
         keywords,
+        primaryKeywords: metadata.primaryKeywords || [],
         knowledge,
         wordCount
       });
@@ -131,36 +132,66 @@ class OpenAIService {
    * Build system prompt with business context
    */
   buildSystemPrompt(category, intent, targetAudience) {
-    let context = `Du bist ein Experte für Unterstützte Kommunikation und Hilfsmittelberatung.
-    Schreibe informative, gut strukturierte Blogartikel auf Deutsch für die Website hilfsmittelberater.online.`;
+    logger.debug('Building system prompt', {
+      category,
+      intent,
+      targetAudience,
+      timestamp: new Date().toISOString()
+    });
+
+    // OPTIMIZED_1: Main System Context
+    let context = `Du bist ein erfahrener Berater von Platus, Österreichs führendem Experten für Assistierende Technologien mit über 21 Jahren Erfahrung.
+Du hilfst Menschen mit Kommunikationsbeeinträchtigungen und ihren Angehörigen, die richtigen Lösungen zu finden.
+
+Deine Mission: Jeder Mensch hat das Recht auf Kommunikation. Du schreibst verständliche, hilfreiche Artikel, die Menschen wirklich weiterbringen.
+
+Wichtige Grundsätze:
+- Nutze IMMER die Wissensdatenbank für konkrete Informationen zu Platus/Service/Produkten/Generelles
+- Verwende die Du-Form - wir sprechen unsere Leser direkt und persönlich an
+- Schreibe auf B1-Niveau: kurze Sätze, einfache Wörter, klare Struktur
+- Erwähne speaKI als hilfreichen KI-Berater, wenn es thematisch passt
+
+Du schreibst für hilfsmittelberater.online - die digitale Plattform für Unterstützte Kommunikation.`;
     
-    // Add category-specific context
+    // Add category-specific context (OPTIMIZED_2-5)
     const categoryContext = {
-      'Hilfsmittel': 'Fokussiere auf technische Hilfsmittel, deren Funktionen, Vorteile und praktische Anwendung.',
-      'Finanzierung': 'Erkläre Finanzierungsmöglichkeiten, Kostenübernahme durch Krankenkassen und Beantragungsprozesse.',
-      'Bildung': 'Konzentriere dich auf pädagogische Aspekte, Förderung und Lernunterstützung.',
-      'Grundlagen': 'Vermittle Basiswissen verständlich und umfassend für Einsteiger.'
+      'Hilfsmittel': 'Erkläre Hilfsmittel praxisnah: Was kann das Gerät? Für wen ist es geeignet? Wie verändert es den Alltag?\nNutze konkrete Beispiele aus der Wissensdatenbank.',
+      'Finanzierung': 'Nimm die Sorgen um Kosten ernst. Erkläre Betroffenen und Angehörigen wie die Kostenübernahme funktioniert.\nMache Mut: Mit der richtigen Unterstützung klappt die Finanzierung.',
+      'Bildung': 'Zeige Wege auf, wie Kommunikationshilfen Lernen ermöglichen. Jeder Betroffene kann sich entwickeln - mit der richtigen Unterstützung.\nErwähne Platus UK-Webkurse und Schulungen für Fachkräfte, wenn passend.',
+      'Grundlagen': 'Du bist der erste Anlaufpunkt für Menschen, die neu in diesem Bereich sind.\nNimm Ängste: Es ist okay, noch nichts zu wissen. Jeder fängt mal an.'
     };
     
     if (categoryContext[category]) {
-      context += `\n${categoryContext[category]}`;
+      context += `\n\n${categoryContext[category]}`;
+      logger.debug(`Added category context for: ${category}`);
+    } else {
+      logger.warn(`No category context found for: ${category}`);
     }
     
-    // Add intent-specific instructions
+    // Add intent-specific instructions (OPTIMIZED_6-9)
     const intentContext = {
-      'educational': 'Der Artikel soll lehrreich und informativ sein, komplexe Themen verständlich erklären.',
-      'commercial': 'Stelle Produkte objektiv vor, betone Nutzen und Anwendungsbereiche.',
-      'transactional': 'Gib konkrete Handlungsanleitungen und praktische Tipps.',
-      'informational': 'Biete umfassende Informationen und beantworte häufige Fragen.'
+      'educational': 'Mache komplexe Themen greifbar. Nutze Alltagsbeispiele, die jeder versteht.\nErkläre nicht nur das "Was", sondern auch das "Warum" und "Wie".\nNach dem Lesen soll der Leser denken: "Das habe ich jetzt wirklich verstanden!"\nVerwende die Wissensdatenbank.',
+      'commercial': 'Stelle den Menschen und seine Bedürfnisse in den Mittelpunkt - nicht das Produkt.\nZeige ehrlich Vor- und Nachteile. Erkläre, für welche Situation welche Lösung passt.\nErwähne die Möglichkeit, Hilfsmittel zu testen - das nimmt Kaufdruck raus.\nBetone: Es geht um die beste Lösung für dich, nicht um einen Verkauf.',
+      'transactional': 'Verweise auf [speaKI](https://speaki.io) für Sofort-Hilfe bei Fragen (verfügbar 24/7).\nMache große Aufgaben klein und machbar.',
+      'informational': 'Beantworte die Fragen, die Menschen wirklich haben - nicht die, von denen wir profitieren würden.\nStrukturiere mit Zwischenüberschriften als Fragen: "Was bedeutet[Keyword]?", "Wie funktioniert[Keyword]?", "Wer kann helfen bei[Keyword]?"\nGib umfassende Infos, aber bleibe verständlich.'
     };
     
     if (intentContext[intent]) {
-      context += `\n${intentContext[intent]}`;
+      context += `\n\n${intentContext[intent]}`;
+      logger.debug(`Added intent context for: ${intent}`);
+    } else {
+      logger.warn(`No intent context found for: ${intent}`);
     }
     
-    // Add target audience context
-    context += `\nZielgruppe: ${targetAudience}`;
-    context += '\nDie Artikel sollten professionell, aber verständlich sein und Menschen mit Kommunikationsbeeinträchtigungen und deren Angehörigen helfen.';
+    // Add target audience context (OPTIMIZED_10)
+    context += `\n\nDu sprichst zu: ${targetAudience}\n\nDiese Menschen brauchen praktische Hilfe und Verständnis.`;
+    
+    logger.info('System prompt built successfully', {
+      promptLength: context.length,
+      category,
+      intent,
+      targetAudience
+    });
     
     return context;
   }
@@ -169,27 +200,44 @@ class OpenAIService {
    * Build structured user prompt
    */
   buildUserPrompt(basePrompt, metadata) {
-    const { topic, category, keywords, knowledge, wordCount } = metadata;
+    const { topic, category, keywords, primaryKeywords = [], knowledge, wordCount } = metadata;
     
-    let prompt = `Schreibe einen Blogartikel zum Thema: "${topic}"
+    logger.debug('Building user prompt', {
+      topic,
+      category,
+      keywordCount: keywords?.length || 0,
+      primaryKeywordCount: primaryKeywords?.length || 0,
+      hasKnowledge: !!knowledge,
+      wordCount
+    });
+    
+    // OPTIMIZED_11: User Article Generation
+    let prompt = `Schreibe einen hilfreichen Artikel zum Thema: "${topic}"
 
 ANFORDERUNGEN:
 - Länge: ${wordCount} Wörter
 - Kategorie: ${category}
-- Zielkeywords: ${keywords.join(', ')}
-- Struktur: Einleitung, 3-5 Hauptabschnitte mit Überschriften, Fazit
-- Stil: Professionell aber verständlich, direkte Ansprache (Sie-Form)
-- Formatierung: Verwende Markdown mit ## für Hauptüberschriften und ### für Unterüberschriften
+- Keywords natürlich einbauen: ${primaryKeywords.join(', ')}, ${keywords.join(', ')}
+- Struktur: Einladende Einleitung mit primary keywords → 3-5 Hauptteile mit klaren Überschriften → Motivierendes Fazit
+- Sprache: B1-Niveau, Du-Form, kurze Sätze (max. 15 Wörter ideal)
+- Ton: Freundlich und kompetent aber nie von oben herab
 
-WISSENSBASIS:
-${knowledge || 'Nutze dein Fachwissen über Unterstützte Kommunikation und Hilfsmittel.'}
+VERFÜGBARES WISSEN AUS DER PLATUS-DATENBANK:
+${knowledge || 'FEHLER: Keine Wissensdatenbank verfügbar - Artikel kann nicht generiert werden.'}
 
-ZUSÄTZLICHE ANWEISUNGEN:
+BESONDERE HINWEISE:
 ${basePrompt}
 
-Beginne den Artikel direkt mit einer einleitenden Überschrift und dem Inhalt. 
-Integriere die Keywords natürlich in den Text.
-Achte auf eine klare Struktur mit informativen Überschriften.`;
+WICHTIG FÜR JEDEN ARTIKEL:
+✓ Beginne mit einer Situation, die der Leser kennt
+✓ Zeige Verständnis für Herausforderungen
+✓ Biete konkrete, machbare Lösungen
+✓ Ende mit einem motivierenden Ausblick`;
+    
+    logger.info('User prompt built successfully', {
+      promptLength: prompt.length,
+      topic: topic.substring(0, 50)
+    });
     
     return prompt;
   }
@@ -227,8 +275,15 @@ Achte auf eine klare Struktur mit informativen Überschriften.`;
    */
   async enhanceContent(content, instructions) {
     if (!this.client) {
+      logger.error('OpenAI client not initialized for content enhancement');
       throw new Error('OpenAI client not initialized');
     }
+
+    logger.info('Starting content enhancement', {
+      contentLength: content.length,
+      instructions: instructions.substring(0, 100),
+      timestamp: new Date().toISOString()
+    });
 
     try {
       const completion = await this.client.chat.completions.create({
@@ -236,20 +291,32 @@ Achte auf eine klare Struktur mit informativen Überschriften.`;
         messages: [
           {
             role: 'system',
-            content: 'Du bist ein professioneller Content-Editor für Blogartikel über Unterstützte Kommunikation.'
+            // OPTIMIZED_12: Content Enhancement System
+            content: 'Du bist ein erfahrener Platus-Redakteur für Artikel über Unterstützte Kommunikation.\nDeine Aufgabe: Mache gute Artikel noch besser - verständlicher, hilfreicher, menschlicher.\nAchte auf B1-Sprachniveau und Du-Form. Füge Platus-Expertise natürlich ein, wo es den Artikel verbessert.'
           },
           {
             role: 'user',
-            content: `Verbessere den folgenden Artikel: ${instructions}\n\nArtikel:\n${content}`
+            // OPTIMIZED_13: Content Enhancement User
+            content: `Verbessere diesen Artikel: ${instructions}\n\nPrüfe besonders:\n- Ist die Sprache B1-tauglich? (kurze Sätze, einfache Wörter)\n- Nutzen wir durchgehend die Du-Form?\n- Klingt es nach Platus: kompetent, hilfsbereit, menschlich?\n- Sind hilfreiche Hinweise auf Platus-Services natürlich und authentisch integriert?\n\nArtikel:\n${content}`
           }
         ],
         temperature: 1,
         max_completion_tokens: 4000
       });
 
+      logger.info('Content enhancement completed', {
+        model: this.model,
+        promptTokens: completion.usage?.prompt_tokens,
+        completionTokens: completion.usage?.completion_tokens,
+        totalTokens: completion.usage?.total_tokens
+      });
+
       return completion.choices[0].message.content;
     } catch (error) {
-      console.error('❌ Content enhancement failed:', error.message);
+      logger.error('Content enhancement failed', {
+        error: error.message,
+        stack: error.stack
+      });
       throw error;
     }
   }
@@ -259,8 +326,15 @@ Achte auf eine klare Struktur mit informativen Überschriften.`;
    */
   async generateSEOMetadata(title, content) {
     if (!this.client) {
+      logger.error('OpenAI client not initialized for SEO generation');
       throw new Error('OpenAI client not initialized');
     }
+
+    logger.info('Starting SEO metadata generation', {
+      title: title.substring(0, 50),
+      contentPreview: content.substring(0, 100),
+      timestamp: new Date().toISOString()
+    });
 
     try {
       const completion = await this.client.chat.completions.create({
@@ -268,20 +342,32 @@ Achte auf eine klare Struktur mit informativen Überschriften.`;
         messages: [
           {
             role: 'system',
-            content: 'Erstelle SEO-optimierte Metadaten für Blogartikel auf Deutsch.'
+            // OPTIMIZED_14: SEO Metadata System
+            content: 'Erstelle SEO-Metadaten, die Menschen mit echten Bedürfnissen ansprechen.\nDie Description soll ehrlich sagen, was der Leser erfährt - keine leeren Versprechen.\nKeywords sollen widerspiegeln, wonach Betroffene und Angehörige wirklich auf Google Search suchen.'
           },
           {
             role: 'user',
-            content: `Erstelle SEO-Metadaten für:\nTitel: ${title}\n\nInhalt (erste 500 Zeichen): ${content.substring(0, 500)}\n\nBitte gib zurück:\n1. SEO Description (max 160 Zeichen)\n2. Keywords (kommagetrennt)\n3. Kategorien (1-3 passende)`
+            // OPTIMIZED_15: SEO Metadata User
+            content: `Erstelle SEO-Metadaten für:\nTitel: ${title}\n\nArtikel-Anfang: ${content.substring(0, 500)}\n\nErstelle:\n1. SEO Description (max 160 Zeichen): Was erfährt der Leser? Warum hilft ihm das?\n2. Keywords: Wonach suchen Betroffene wirklich? (5-8 Begriffe)`
           }
         ],
         temperature: 1,
         max_completion_tokens: 500
       });
 
+      logger.info('SEO metadata generation completed', {
+        model: this.model,
+        promptTokens: completion.usage?.prompt_tokens,
+        completionTokens: completion.usage?.completion_tokens,
+        totalTokens: completion.usage?.total_tokens
+      });
+
       return completion.choices[0].message.content;
     } catch (error) {
-      console.error('❌ SEO metadata generation failed:', error.message);
+      logger.error('SEO metadata generation failed', {
+        error: error.message,
+        stack: error.stack
+      });
       throw error;
     }
   }

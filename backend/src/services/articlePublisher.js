@@ -32,9 +32,10 @@ class ArticlePublisher {
       
       if (fields['Needs AI Processing']) {
         console.log('🤖 Enhancing content with AI...');
+        // OPTIMIZED_16: Default AI Enhancement
         content = await openaiService.enhanceContent(
           content,
-          fields['AI Instructions'] || 'Verbessere Struktur und Lesbarkeit'
+          fields['AI Instructions'] || 'Mache den Artikel verständlicher (B1-Niveau), strukturierter und hilfreicher.\nPrüfe: Du-Form, kurze Sätze, Platus-Tonalität.'
         );
       }
       
