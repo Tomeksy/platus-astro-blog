@@ -157,7 +157,7 @@ Topic → Generate Keywords → Query Knowledge WITH Keywords → Write
 "Das Grid Pad ist toll. Es hilft Menschen. Die Bedienung ist einfach. Jeder kann es nutzen."
 
 **Should Be:**
-"Das Grid Pad ist ein tolles Hilfsmittel, das Menschen mit Einschränkungen dabei hilft, selbstständig zu kommunizieren."
+"Das Grid Pad ist ein tolles Hilfsmittel, das Menschen mit Einschränkungen dabei hilft selbstständig zu kommunizieren."
 
 **Solution Required:**
 - **Human Task:** Provide 5-10 examples of good B1 German sentences
